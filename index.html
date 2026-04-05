@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanif Edma</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <style>
+        /* --- Setup & Variables --- */
+        :root {
+            --bg: #0f0f0f;
+            --text-primary: #f0f0f0;
+            --text-secondary: #e0e0e0;
+            --accent: #3b82f6;
+            --border: #333333;
+            --card-bg: #1a1a1a;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --accent: #2563eb;
+            --border: #e5e7eb;
+            --card-bg: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        header,
+        p,
+        a,
+        .caption,
+        strong,
+        .media-container,
+        .links-container,
+        .link-item svg {
+            transition: background-color 2s, color 2s, border-color 2s, fill 2s;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 5rem 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* --- Custom Theme Toggle Styling --- */
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 42px;
+            position: relative;
+            width: 110px;
+            padding: 2px;
+            /* border-radius: 34px;
+            background: var(--border); */
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #73b3d1;
+            /* Day Sky Color */
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: 2s;
+            border-radius: 34px;
+            overflow: hidden;
+
+            /* --- THE 3D RECESS EFFECT --- */
+            /* 1. Deep inner shadow for the "hole" 
+       2. A subtle light highlight on the bottom rim 
+       3. A dark "lip" at the top */
+            box-shadow:
+                inset 0 8px 12px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 8px rgba(255, 255, 255, 0.1),
+                0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            /* BETTER SUN: Intense hot core with outer glow */
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #ffdb50 70%);
+            /* Sun Shadow: A drop shadow that makes it look like it's hovering over the track */
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 0 15px 2px rgba(255, 219, 80, 0.6);
+            bottom: 6px;
+            content: "";
+            height: 30px;
+            left: 6px;
+            position: absolute;
+            transition: 2s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 9;
+        }
+
+        .slider:hover {
+            transition: 0.5s;
+            transform: translateY(-5px);
+        }
+
+        .mode-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: 2s;
+            z-index: 5;
+            width: 100%;
+            text-align: center;
+        }
+
+        .text-light {
+            color: #fff;
+            padding-left: 30px;
+            opacity: 1;
+        }
+
+        .text-dark {
+            color: #fff;
+            padding-right: 30px;
+            opacity: 0;
+        }
+
+        input:checked+.slider {
+            background-color: #1a2238;
+        }
+
+        input:checked+.slider:before {
+            transition: transform 2s, background-image 2s, box-shadow 2s;
+            transform: translateX(72px);
+
+            /* BRIGHT MOON: Glowing white light effect */
+            background-color: #ffffff;
+            background-image:
+                /* Craters: subtle greyish shadows for depth */
+                radial-gradient(circle at 35% 30%, #e5e5d1 18%, transparent 18.1%),
+                radial-gradient(circle at 65% 50%, #e5e5d1 14%, transparent 14.1%),
+                radial-gradient(circle at 25% 70%, #e5e5d1 10%, transparent 10.1%),
+                radial-gradient(circle at 75% 85%, #e5e5d1 8%, transparent 8.1%);
+
+            /* Moon Shadow: Different glow for the night mode */
+            box-shadow:
+                -4px 4px 10px rgba(0, 0, 0, 0.5),
+                /* directional shadow */
+                0 0 15px 5px rgba(255, 255, 255, 0.4);
+        }
+
+        input:checked+.slider .text-light {
+            opacity: 0;
+        }
+
+        input:checked+.slider .text-dark {
+            opacity: 1;
+        }
+
+        /* Decorative Elements: Clouds */
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: 2s;
+            z-index: 10;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+            filter: blur(2px);
+        }
+
+        .cloud:nth-child(1) {
+            width: 18px;
+            height: 18px;
+            top: 13px;
+            right: 65px;
+        }
+
+        .cloud:nth-child(2) {
+            width: 14px;
+            height: 14px;
+            top: 18px;
+            right: 75px;
+        }
+
+        .cloud:nth-child(3) {
+            width: 12px;
+            height: 12px;
+            top: 20px;
+            right: 60px;
+        }
+
+        input:checked+.slider .clouds {
+            transform: translateY(40px);
+        }
+
+        /* Decorative Elements: Stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: -38px;
+            transition: 2s;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #fff;
+        }
+
+        .star:nth-child(1) {
+            top: 10px;
+            left: 15px;
+            width: 3px;
+            height: 3px;
+        }
+
+        .star:nth-child(2) {
+            top: 5px;
+            left: 35px;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(3) {
+            top: 30px;
+            left: 50px;
+            width: 2px;
+            height: 2px;
+        }
+
+        input:checked+.slider .stars {
+            transform: translateY(38px);
+        }
+
+        /* --- Content Layout --- */
+        .intro-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .greeting {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        a:hover {
+            transition: fill 0s, color 0s;
+            color: var(--accent);
+        }
+
+        header p a {
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .visual-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            justify-self: end;
+        }
+
+        .media-container {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .caption {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .links-container {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .link-item {
+            font-weight: 500;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+        }
+
+        .link-item svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--text-secondary);
+        }
+
+        .link-item:hover {
+            transition: transform 0.5s, fill 0s, color 0s;
+            transform: translateY(-5px);
+        }
+
+        .link-item:hover svg {
+            transition: fill 0s, color 0s;
+            fill: var(--accent);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        @media (max-width: 900px) {
+            .media-container {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .theme-switch-wrapper {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .intro-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .visual-stack {
+                justify-self: center;
+                align-items: center;
+            }
+
+            .caption {
+                text-align: center;
+            }
+
+            .links-container {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider">
+                <span class="mode-text text-light">Light</span>
+                <span class="mode-text text-dark">Dark</span>
+
+                <div class="clouds">
+                    <div class="cloud"></div>
+                    <div class="cloud"></div>
+                    <div class="cloud"></div>
+                </div>
+                <div class="stars">
+                    <div class="star"></div>
+                    <div class="star"></div>
+                    <div class="star"></div>
+                </div>
+            </div>
+        </label>
+    </div>
+
+    <main class="container">
+        <div class="intro-section">
+            <header>
+                <span class="greeting">Hi, I'm Hanif Edma</span>
+                <p>
+                    Currently a <strong>Research Assistant</strong> based in <strong>Seoul, South Korea</strong>.
+                    Focuses on the intersection of <strong>Electrical Engineering</strong>,
+                    <strong>Robotics</strong>, and <strong>Control Engineering</strong>.
+                </p>
+                <p>
+                    My current research focuses on <strong>Robust Robot Control</strong>.
+                    I'm passionate about exploring <strong>math and technology</strong>.
+                </p>
+                <p>
+                    Recent work can be seen at
+                    <strong><a href="https://sgp-mppi.github.io/" target="_blank">sgp-mppi.github.io</a></strong> and
+                    <strong><a href="https://gp-ramppi.github.io/" target="_blank">gp-ramppi.github.io</a></strong>.
+                </p>
+                <p>
+                    Outside of work, I enjoy running, watching movies, and deep-diving into math videos (especially
+                    3Blue1Brown).
+                    Also spend my time doing 3-ball juggling and learning about tech like web, cybersecurity, bitcoin,
+                    etc.
+                </p>
+            </header>
+
+            <section class="visual-stack">
+                <div class="media-container">
+                    <video autoplay muted loop playsinline>
+                        <source src="proposed diff.webm" type="video/webm">
+                    </video>
+                </div>
+                <div class="media-container">
+                    <video autoplay muted loop playsinline>
+                        <source src="real_world_vid.webm" type="video/webm">
+                    </video>
+                </div>
+                <div class="caption">
+                    <a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">
+                        Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust Mobile Robot Control
+                    </a>
+                    <br> Hanif Edma et al., IEEE Access, 2025
+                </div>
+            </section>
+        </div>
+
+        <nav class="links-container">
+            <a href="mailto:hanifsecondmail@gmail.com" class="link-item" title="Gmail">
+                <span class="sr-only">Mail</span>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                </svg>
+            </a>
+            <a href="https://www.linkedin.com/in/hanif-edma/" class="link-item" target="_blank" title="LinkedIn">
+                <span class="sr-only">LinkedIn</span>
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                </svg>
+            </a>
+            <a href="resume.pdf" class="link-item" target="_blank" title="Resume">Resume</a>
+        </nav>
+    </main>
+
+    <script>
+        const toggleSwitch = document.querySelector('#checkbox');
+        const htmlElement = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme) {
+            htmlElement.setAttribute('data-theme', currentTheme);
+            toggleSwitch.checked = (currentTheme !== 'light');
+        } else {
+            toggleSwitch.checked = true; // Default Dark
+        }
+
+        toggleSwitch.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                htmlElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+
+</html>
