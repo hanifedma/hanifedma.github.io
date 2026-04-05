@@ -62,12 +62,13 @@
             margin: 0 auto;
         }
 
-        /* --- Custom Theme Toggle Styling --- */
         .theme-switch-wrapper {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            z-index: 1000;
+            display: flex;
+            justify-content: flex-end;
+            /* Aligns to the right of the container */
+            margin-bottom: 2rem;
+            /* Adds space before the intro starts */
+            width: 100%;
         }
 
         .theme-switch {
@@ -76,8 +77,6 @@
             position: relative;
             width: 110px;
             padding: 2px;
-            /* border-radius: 34px;
-            background: var(--border); */
         }
 
         .theme-switch input {
@@ -417,28 +416,27 @@
 
 <body>
 
-    <div class="theme-switch-wrapper">
-        <label class="theme-switch" for="checkbox">
-            <input type="checkbox" id="checkbox" />
-            <div class="slider">
-                <span class="mode-text text-light">Light</span>
-                <span class="mode-text text-dark">Dark</span>
-
-                <div class="clouds">
-                    <div class="cloud"></div>
-                    <div class="cloud"></div>
-                    <div class="cloud"></div>
-                </div>
-                <div class="stars">
-                    <div class="star"></div>
-                    <div class="star"></div>
-                    <div class="star"></div>
-                </div>
-            </div>
-        </label>
-    </div>
-
     <main class="container">
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox" />
+                <div class="slider">
+                    <span class="mode-text text-light">Light</span>
+                    <span class="mode-text text-dark">Dark</span>
+
+                    <div class="clouds">
+                        <div class="cloud"></div>
+                        <div class="cloud"></div>
+                        <div class="cloud"></div>
+                    </div>
+                    <div class="stars">
+                        <div class="star"></div>
+                        <div class="star"></div>
+                        <div class="star"></div>
+                    </div>
+                </div>
+            </label>
+        </div>
         <div class="intro-section">
             <header>
                 <span class="greeting">Hi, I'm Hanif Edma</span>
