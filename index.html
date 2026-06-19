@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- "preload" disables transitions until the first paint so the theme/toggle
+     don't animate on load. It is removed by script once rendering settles. -->
+<html lang="en" class="preload">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Hanif Edma — research assistant in Seoul focusing on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
+    <meta name="theme-color" content="#0f0f0f">
     <title>Hanif Edma</title>
+    <!-- Apply the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
+            }
+        } catch (e) { /* localStorage may be unavailable; default theme is fine */ }
+    </script>
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
@@ -46,6 +60,12 @@
         .links-container,
         .link-item svg {
             transition: background-color 2s, color 2s, border-color 2s, fill 2s;
+        }
+
+        /* No animations until the page has painted once (see <html class="preload">). */
+        .preload *,
+        .preload *::before {
+            transition: none !important;
         }
 
         body {
@@ -456,19 +476,18 @@
                 </p>
                 <p>
                     Outside of work, I enjoy running 🏃, watching movies, and deep-diving into math videos—especially
-                    3Blue1Brown. Also spend my time doing 3-ball juggling 🤹‍♂️ and learning about tech like web,
-                    cybersecurity, bitcoin ₿, etc.
+                    3Blue1Brown. Also spend my time doing juggling 🤹‍♂️ and learning about tech.
                 </p>
             </header>
 
             <section class="visual-stack">
                 <div class="media-container">
-                    <video autoplay muted loop playsinline>
+                    <video autoplay muted loop playsinline width="854" height="480">
                         <source src="proposed diff.webm" type="video/webm">
                     </video>
                 </div>
                 <div class="media-container">
-                    <video autoplay muted loop playsinline>
+                    <video autoplay muted loop playsinline width="426" height="240">
                         <source src="real_world_vid.webm" type="video/webm">
                     </video>
                 </div>
@@ -501,26 +520,62 @@
     </main>
 
     <script>
+        const root = document.documentElement;
         const toggleSwitch = document.querySelector('#checkbox');
-        const htmlElement = document.documentElement;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
 
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme) {
-            htmlElement.setAttribute('data-theme', currentTheme);
-            toggleSwitch.checked = (currentTheme !== 'light');
-        } else {
-            toggleSwitch.checked = true; // Default Dark
+        // The theme is set pre-paint in <head>; just reflect it on the toggle (checked = dark).
+        toggleSwitch.checked = root.getAttribute('data-theme') !== 'light';
+
+        toggleSwitch.addEventListener('change', () => {
+            const isDark = toggleSwitch.checked;
+            if (isDark) {
+                root.removeAttribute('data-theme');
+            } else {
+                root.setAttribute('data-theme', 'light');
+            }
+            themeColor.setAttribute('content', isDark ? '#0f0f0f' : '#ffffff');
+            try {
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            } catch (e) { /* storage may be unavailable; theme still applies for this visit */ }
+        });
+
+        // Pause videos while off-screen to save CPU on low-end devices.
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.play().catch(() => { });
+                    } else {
+                        entry.target.pause();
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('video').forEach((video) => observer.observe(video));
         }
 
-        toggleSwitch.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                htmlElement.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                htmlElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-            }
+        // Reload an already-open tab once a new version is deployed. The check only
+        // runs when the tab becomes visible again, so it adds no idle/background work.
+        let deployedVersion = null;
+        async function checkForNewVersion() {
+            try {
+                const res = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+                const version = res.headers.get('etag') || res.headers.get('last-modified');
+                if (!version) return;
+                if (deployedVersion && version !== deployedVersion) {
+                    location.reload();
+                } else {
+                    deployedVersion = version; // remember the version this tab is showing
+                }
+            } catch (e) { /* offline or blocked — retry next time the tab is focused */ }
+        }
+        checkForNewVersion();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') checkForNewVersion();
         });
+
+        // Re-enable theme transitions once the initial frame has painted.
+        requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
     </script>
 </body>
 
