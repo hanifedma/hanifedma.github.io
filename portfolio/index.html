@@ -373,18 +373,25 @@
         .project-links {
             display: flex;
             flex-wrap: wrap;
-            gap: 1.25rem;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
         }
 
         .project-links a {
-            color: var(--accent);
-            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #fff;
+            background: var(--accent);
+            font-weight: 600;
             font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
         }
 
         .project-links a:hover {
-            transition: color 0s;
-            text-decoration: underline;
+            transition: opacity 0.15s;
+            opacity: 0.85;
         }
 
         .project-media {
@@ -462,8 +469,10 @@
                 <span class="tag">2025</span>
             </div>
             <ul>
-                <li>Trains a Gaussian Process to learn the gap between a robot's nominal model and its true dynamics.</li>
-                <li>Captures both the mean deviation and its uncertainty, feeding them into a risk-aware MPPI controller.</li>
+                <li>Trains a Gaussian Process to learn the gap between a robot's nominal model and its true dynamics.
+                </li>
+                <li>Captures both the mean deviation and its uncertainty, feeding them into a risk-aware MPPI
+                    controller.</li>
                 <li>Improves tracking accuracy and safety over baseline controllers.</li>
                 <li>Validated in simulation and on real hardware (F1TENTH and Clearpath Jackal).</li>
             </ul>
@@ -473,6 +482,14 @@
                     <img src="gpramppi.jpg"
                         alt="Method framework: offline data collection, Gaussian Process, and online control on the F1TENTH car"
                         loading="lazy" width="843" height="403">
+                </picture>
+            </div>
+            <div class="project-media">
+                <picture>
+                    <source srcset="f1tenth_car.webp" type="image/webp">
+                    <img src="f1tenth_car.jpg"
+                        alt="The F1TENTH autonomous car platform, labeled with its Hokuyo LiDAR, Jetson Orin NX, VESC, and IMU sensor"
+                        loading="lazy" width="1000" height="563">
                 </picture>
             </div>
             <div class="project-media">
@@ -495,7 +512,8 @@
             </div>
             <ul>
                 <li>Combines risk-aware MPPI control with online learning.</li>
-                <li>A Sparse Gaussian Process identifies and quantifies model–reality discrepancies during operation.</li>
+                <li>A Sparse Gaussian Process identifies and quantifies model–reality discrepancies during operation.
+                </li>
                 <li>The controller uses this learned uncertainty to improve robustness and collision avoidance.</li>
                 <li>Demonstrated on an autonomous vehicle with better trajectory tracking than standard MPPI.</li>
             </ul>
@@ -532,7 +550,7 @@
                 <li>Developed an ESP32-based IoT gateway bridging medical instruments to the cloud.</li>
                 <li>Connects thermometers, oximeters, and biometric sensors.</li>
                 <li>Supports over six device categories.</li>
-                <li>Built as a team of 2.</li>
+                <li>Built as a team of 2 people.</li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -558,7 +576,7 @@
                 <li>Built a computer-vision system for corrosion detection.</li>
                 <li>Shipped the Android app with Flutter (also runs on Windows and Linux).</li>
                 <li>Delivered within a one-month timeframe.</li>
-                <li>Won 1st place and a prize of 25 million IDR (~1,600 USD) as a team of 3.</li>
+                <li>Won 1st place and a prize of 25 million IDR (~1,600 USD) as a team of 3 people.</li>
             </ul>
             <div class="project-media">
                 <video controls preload="none" playsinline width="960" height="720" poster="corrosion_poster.jpg">
@@ -578,7 +596,8 @@
                 <span class="tag">PWA</span>
             </div>
             <ul>
-                <li>Minimalist, jungle-themed focus timer that grows a virtual forest — one tree per completed session.</li>
+                <li>Minimalist, jungle-themed focus timer that grows a virtual forest — one tree per completed session.
+                </li>
                 <li>Rest stopwatch, editable session history, and daily and cumulative stats.</li>
                 <li>Local-first storage with optional cross-device sync (Supabase + Google sign-in).</li>
                 <li>Installable as a Progressive Web App; built with vanilla JavaScript, HTML, and CSS.</li>
@@ -609,7 +628,8 @@
                 <li>Lightweight, local-first diary web app with dated notes.</li>
                 <li>Date-sorted photo gallery kept separate from the written notes.</li>
                 <li>Autosave and manual PDF export for selected date ranges.</li>
-                <li>Optional cloud sync via Supabase + Google sign-in; built with vanilla JavaScript, HTML, and CSS.</li>
+                <li>Optional cloud sync via Supabase + Google sign-in; built with vanilla JavaScript, HTML, and CSS.
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
