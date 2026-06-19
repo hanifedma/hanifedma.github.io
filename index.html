@@ -466,8 +466,8 @@
                     control engineering, and robotics.
                 </p>
                 <p>
-                    My current research focuses on robust robot control.
-                    I'm passionate about exploring math and technology.
+                    My current research focuses on control engineering and its implementation to robotics. I'm
+                    passionate about exploring math and technology.
                 </p>
                 <p>
                     Recent work can be seen at
@@ -540,6 +540,18 @@
             } catch (e) { /* storage may be unavailable; theme still applies for this visit */ }
         });
 
+        // Always open the latest resume, never a cached old copy. Tagging the link
+        // with a unique value makes the browser fetch a fresh file; the server
+        // ignores the query string and returns the current PDF. We set it on the
+        // element (not on click) so it also covers middle-click / open-in-new-tab,
+        // and re-stamp on focus so a long-open tab still gets a freshly-deployed PDF.
+        const resumeLink = document.querySelector('a[href$=".pdf"]');
+        const resumeBase = resumeLink && resumeLink.getAttribute('href');
+        function stampResume() {
+            if (resumeLink) resumeLink.href = resumeBase + '?t=' + Date.now();
+        }
+        stampResume();
+
         // Pause videos while off-screen to save CPU on low-end devices.
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
@@ -571,7 +583,10 @@
         }
         checkForNewVersion();
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') checkForNewVersion();
+            if (document.visibilityState === 'visible') {
+                checkForNewVersion();
+                stampResume();
+            }
         });
 
         // Re-enable theme transitions once the initial frame has painted.
