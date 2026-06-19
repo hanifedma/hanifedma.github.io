@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<!-- "preload" disables transitions until the first paint so the theme/toggle
+     don't animate on load. It is removed by script once rendering settles. -->
+<html lang="en" class="preload">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Portfolio of Hanif Edma — research in robust robot control, IoT and computer-vision projects, and web apps.">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Portfolio — Hanif Edma</title>
+    <!-- Apply the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
+            }
+        } catch (e) { /* localStorage may be unavailable; default theme is fine */ }
+    </script>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <style>
+        /* --- Setup & Variables --- */
+        :root {
+            --bg: #0f0f0f;
+            --text-primary: #f0f0f0;
+            --text-secondary: #e0e0e0;
+            --accent: #3b82f6;
+            --border: #333333;
+            --card-bg: #1a1a1a;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #404040;
+            --accent: #2563eb;
+            --border: #e5e7eb;
+            --card-bg: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        header,
+        h1,
+        h2,
+        p,
+        a,
+        .project ul,
+        .section-label,
+        .tag,
+        .project,
+        .project-media img,
+        .project-media video {
+            transition: background-color 2s, color 2s, border-color 2s, fill 2s;
+        }
+
+        /* No animations until the page has painted once (see <html class="preload">). */
+        .preload *,
+        .preload *::before {
+            transition: none !important;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 3rem 3rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        /* --- Top bar (home link + theme toggle) --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .home-link {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .home-link:hover {
+            transition: color 0s;
+            color: var(--accent);
+        }
+
+        /* --- Theme toggle (mechanism unchanged from the home page) --- */
+        .theme-switch-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 42px;
+            position: relative;
+            width: 110px;
+            padding: 2px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #73b3d1;
+            /* Day Sky Color */
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: 2s;
+            border-radius: 34px;
+            overflow: hidden;
+            box-shadow:
+                inset 0 8px 12px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 8px rgba(255, 255, 255, 0.1),
+                0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #ffdb50 70%);
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 0 15px 2px rgba(255, 219, 80, 0.6);
+            bottom: 6px;
+            content: "";
+            height: 30px;
+            left: 6px;
+            position: absolute;
+            transition: 2s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 9;
+        }
+
+        .mode-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: 2s;
+            z-index: 5;
+            width: 100%;
+            text-align: center;
+        }
+
+        .text-light {
+            color: #fff;
+            padding-left: 30px;
+            opacity: 1;
+        }
+
+        .text-dark {
+            color: #fff;
+            padding-right: 30px;
+            opacity: 0;
+        }
+
+        input:checked+.slider {
+            background-color: #1a2238;
+        }
+
+        input:checked+.slider:before {
+            transition: transform 2s, background-image 2s, box-shadow 2s;
+            transform: translateX(68px);
+            background-color: #ffffff;
+            background-image:
+                radial-gradient(circle at 35% 30%, #e5e5d1 18%, transparent 18.1%),
+                radial-gradient(circle at 65% 50%, #e5e5d1 14%, transparent 14.1%),
+                radial-gradient(circle at 25% 70%, #e5e5d1 10%, transparent 10.1%),
+                radial-gradient(circle at 75% 85%, #e5e5d1 8%, transparent 8.1%);
+            box-shadow:
+                -4px 4px 10px rgba(0, 0, 0, 0.5),
+                0 0 15px 5px rgba(255, 255, 255, 0.4);
+        }
+
+        input:checked+.slider .text-light {
+            opacity: 0;
+        }
+
+        input:checked+.slider .text-dark {
+            opacity: 1;
+        }
+
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: 2s;
+            z-index: 10;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+            filter: blur(2px);
+        }
+
+        .cloud:nth-child(1) {
+            width: 18px;
+            height: 18px;
+            top: 13px;
+            right: 65px;
+        }
+
+        .cloud:nth-child(2) {
+            width: 14px;
+            height: 14px;
+            top: 18px;
+            right: 75px;
+        }
+
+        .cloud:nth-child(3) {
+            width: 12px;
+            height: 12px;
+            top: 20px;
+            right: 60px;
+        }
+
+        input:checked+.slider .clouds {
+            transform: translateY(40px);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: -38px;
+            transition: 2s;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #fff;
+        }
+
+        .star:nth-child(1) {
+            top: 10px;
+            left: 15px;
+            width: 3px;
+            height: 3px;
+        }
+
+        .star:nth-child(2) {
+            top: 5px;
+            left: 35px;
+            width: 2px;
+            height: 2px;
+        }
+
+        .star:nth-child(3) {
+            top: 30px;
+            left: 50px;
+            width: 2px;
+            height: 2px;
+        }
+
+        input:checked+.slider .stars {
+            transform: translateY(38px);
+        }
+
+        /* --- Page header --- */
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .lead {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+        }
+
+        /* --- Sections & projects --- */
+        .section-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin: 3rem 0 0.25rem;
+        }
+
+        .project {
+            padding: 1.75rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .project h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--text-primary);
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+
+        .tag {
+            font-size: 0.78rem;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .tag.award {
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .project p {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0 1rem;
+        }
+
+        .project ul {
+            font-size: 1.0625rem;
+            color: var(--text-secondary);
+            margin: 0.75rem 0 1.1rem;
+            padding-left: 1.2rem;
+        }
+
+        .project li {
+            margin-bottom: 0.35rem;
+        }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+        }
+
+        .project-links a {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .project-links a:hover {
+            transition: color 0s;
+            text-decoration: underline;
+        }
+
+        .project-media {
+            margin-top: 1.25rem;
+            max-width: 480px;
+        }
+
+        .project-media img,
+        .project-media video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 2rem 1.5rem;
+            }
+
+            .project-media {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+        <div class="top-bar">
+            <a href="/" class="home-link">&larr; Hanif Edma</a>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider">
+                        <span class="mode-text text-light">Light</span>
+                        <span class="mode-text text-dark">Dark</span>
+
+                        <div class="clouds">
+                            <div class="cloud"></div>
+                            <div class="cloud"></div>
+                            <div class="cloud"></div>
+                        </div>
+                        <div class="stars">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <header>
+            <h1>Portfolio</h1>
+            <p class="lead">A selection of my research, engineering projects, and web apps.</p>
+        </header>
+
+        <p class="section-label">Research</p>
+
+        <article class="project">
+            <h2>Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust Mobile Robot Control</h2>
+            <div class="tags">
+                <span class="tag">Published</span>
+                <span class="tag">1st author</span>
+                <span class="tag">IEEE Access · SCI Q1</span>
+                <span class="tag">2025</span>
+            </div>
+            <ul>
+                <li>Trains a Gaussian Process to learn the gap between a robot's nominal model and its true dynamics.</li>
+                <li>Captures both the mean deviation and its uncertainty, feeding them into a risk-aware MPPI controller.</li>
+                <li>Improves tracking accuracy and safety over baseline controllers.</li>
+                <li>Validated in simulation and on real hardware (F1TENTH and Clearpath Jackal).</li>
+            </ul>
+            <div class="project-media">
+                <picture>
+                    <source srcset="gpramppi.webp" type="image/webp">
+                    <img src="gpramppi.jpg"
+                        alt="Method framework: offline data collection, Gaussian Process, and online control on the F1TENTH car"
+                        loading="lazy" width="843" height="403">
+                </picture>
+            </div>
+            <div class="project-media">
+                <video muted loop playsinline preload="none" data-autoplay width="854" height="480"
+                    poster="gpramppi_demo_poster.jpg">
+                    <source src="gpramppi_demo.webm" type="video/webm">
+                </video>
+            </div>
+            <div class="project-links">
+                <a href="https://gp-ramppi.github.io/" target="_blank">Images, video &amp; explanation &rarr;</a>
+                <a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">Paper (DOI) &rarr;</a>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>Robust RA-MPPI using Online Learning</h2>
+            <div class="tags">
+                <span class="tag">Submitted to IJCAS · Springer</span>
+                <span class="tag">1st author</span>
+            </div>
+            <ul>
+                <li>Combines risk-aware MPPI control with online learning.</li>
+                <li>A Sparse Gaussian Process identifies and quantifies model–reality discrepancies during operation.</li>
+                <li>The controller uses this learned uncertainty to improve robustness and collision avoidance.</li>
+                <li>Demonstrated on an autonomous vehicle with better trajectory tracking than standard MPPI.</li>
+            </ul>
+            <div class="project-media">
+                <picture>
+                    <source srcset="sgpmppi.webp" type="image/webp">
+                    <img src="sgpmppi.jpg"
+                        alt="Control scheme: a Sparse Gaussian Process feeding a risk-aware MPPI controller in the loop"
+                        loading="lazy" width="900" height="624">
+                </picture>
+            </div>
+            <div class="project-media">
+                <video muted loop playsinline preload="none" data-autoplay width="640" height="362"
+                    poster="sgpmppi_demo_poster.jpg">
+                    <source src="sgpmppi_demo.webm" type="video/webm">
+                </video>
+            </div>
+            <div class="project-links">
+                <a href="https://sgp-mppi.github.io/" target="_blank">Images, video &amp; explanation &rarr;</a>
+            </div>
+        </article>
+
+        <p class="section-label">Engineering Projects</p>
+
+        <article class="project">
+            <h2>ESP32 IoT Medical Gateway</h2>
+            <div class="tags">
+                <span class="tag">Team of 2</span>
+                <span class="tag">Embedded / IoT</span>
+                <span class="tag">ESP32</span>
+                <span class="tag">2022</span>
+            </div>
+            <ul>
+                <li>Developed an ESP32-based IoT gateway bridging medical instruments to the cloud.</li>
+                <li>Connects thermometers, oximeters, and biometric sensors.</li>
+                <li>Supports over six device categories.</li>
+                <li>Built as a team of 2.</li>
+            </ul>
+            <div class="project-media">
+                <picture>
+                    <source srcset="iotm.webp" type="image/webp">
+                    <img src="iotm.jpg"
+                        alt="IoT medical gateway with connected thermometers, oximeter, scale, and blood-pressure monitor"
+                        loading="lazy" width="749" height="601">
+                </picture>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>Corrosion Detection App (Computer Vision)</h2>
+            <div class="tags">
+                <span class="tag award">🏆 1st place</span>
+                <span class="tag">Prize 25M IDR (~$1,600)</span>
+                <span class="tag">Team of 3</span>
+                <span class="tag">Flutter</span>
+                <span class="tag">Computer Vision</span>
+                <span class="tag">2023</span>
+            </div>
+            <ul>
+                <li>Built a computer-vision system for corrosion detection.</li>
+                <li>Shipped the Android app with Flutter (also runs on Windows and Linux).</li>
+                <li>Delivered within a one-month timeframe.</li>
+                <li>Won 1st place and a prize of 25 million IDR (~1,600 USD) as a team of 3.</li>
+            </ul>
+            <div class="project-media">
+                <video controls preload="none" playsinline width="960" height="720" poster="corrosion_poster.jpg">
+                    <source src="corrosion_demo.mp4" type="video/mp4">
+                </video>
+            </div>
+        </article>
+
+        <p class="section-label">Web Apps</p>
+
+        <article class="project">
+            <h2>TimberTimer</h2>
+            <div class="tags">
+                <span class="tag">Web app</span>
+                <span class="tag">Vanilla JS</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">PWA</span>
+            </div>
+            <ul>
+                <li>Minimalist, jungle-themed focus timer that grows a virtual forest — one tree per completed session.</li>
+                <li>Rest stopwatch, editable session history, and daily and cumulative stats.</li>
+                <li>Local-first storage with optional cross-device sync (Supabase + Google sign-in).</li>
+                <li>Installable as a Progressive Web App; built with vanilla JavaScript, HTML, and CSS.</li>
+            </ul>
+            <div class="project-media">
+                <picture>
+                    <source srcset="timbertimer.webp" type="image/webp">
+                    <img src="timbertimer.jpg"
+                        alt="TimberTimer app — focus timer with session settings, to-do list, and a weekly forest"
+                        loading="lazy" width="960" height="615">
+                </picture>
+            </div>
+            <div class="project-links">
+                <a href="https://hanifedma.com/timbertimer" target="_blank">Open app &rarr;</a>
+                <a href="https://github.com/hanifedma/timbertimer" target="_blank">Source &rarr;</a>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>CanopyDiary</h2>
+            <div class="tags">
+                <span class="tag">Web app</span>
+                <span class="tag">Vanilla JS</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">PWA</span>
+            </div>
+            <ul>
+                <li>Lightweight, local-first diary web app with dated notes.</li>
+                <li>Date-sorted photo gallery kept separate from the written notes.</li>
+                <li>Autosave and manual PDF export for selected date ranges.</li>
+                <li>Optional cloud sync via Supabase + Google sign-in; built with vanilla JavaScript, HTML, and CSS.</li>
+            </ul>
+            <div class="project-media">
+                <picture>
+                    <source srcset="canopydiary.webp" type="image/webp">
+                    <img src="canopydiary.jpg"
+                        alt="CanopyDiary app — diary entry view with a date picker and day pictures panel"
+                        loading="lazy" width="960" height="615">
+                </picture>
+            </div>
+            <div class="project-links">
+                <a href="https://hanifedma.com/canopydiary" target="_blank">Open app &rarr;</a>
+                <a href="https://github.com/hanifedma/canopydiary" target="_blank">Source &rarr;</a>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        const root = document.documentElement;
+        const toggleSwitch = document.querySelector('#checkbox');
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+
+        // The theme is set pre-paint in <head>; just reflect it on the toggle (checked = dark).
+        toggleSwitch.checked = root.getAttribute('data-theme') !== 'light';
+
+        toggleSwitch.addEventListener('change', () => {
+            const isDark = toggleSwitch.checked;
+            if (isDark) {
+                root.removeAttribute('data-theme');
+            } else {
+                root.setAttribute('data-theme', 'light');
+            }
+            themeColor.setAttribute('content', isDark ? '#0f0f0f' : '#ffffff');
+            try {
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            } catch (e) { /* storage may be unavailable; theme still applies for this visit */ }
+        });
+
+        // Looping demo clips (marked data-autoplay) start — and only then lazy-load —
+        // once scrolled into view, and pause when they leave, to keep load and CPU low.
+        // The corrosion video has no data-autoplay, so it stays click-to-play.
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        if (video.dataset.autoplay !== undefined) video.play().catch(() => { });
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.25 });
+            document.querySelectorAll('video').forEach((video) => observer.observe(video));
+        }
+
+        // Reload an already-open tab once a new version is deployed. The check only
+        // runs when the tab becomes visible again, so it adds no idle/background work.
+        let deployedVersion = null;
+        async function checkForNewVersion() {
+            try {
+                const res = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+                const version = res.headers.get('etag') || res.headers.get('last-modified');
+                if (!version) return;
+                if (deployedVersion && version !== deployedVersion) {
+                    location.reload();
+                } else {
+                    deployedVersion = version;
+                }
+            } catch (e) { /* offline or blocked — retry next time the tab is focused */ }
+        }
+        checkForNewVersion();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') checkForNewVersion();
+        });
+
+        // Re-enable theme transitions once the initial frame has painted.
+        requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
+    </script>
+</body>
+
+</html>
