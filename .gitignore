@@ -5,5 +5,22 @@ portfolio/iotm.png
 portfolio/f1tenth_car.png
 portfolio/awarding.jpeg
 
-# Local LaTeX portfolio PDF (not deployed to the site)
-portfolio-pdf/
+# Raw source for the 6-DOF project — kept local only. The site uses the
+# optimized robot6dof.jpg / robot6dof_demo.webm, and the code has its own repo
+# (github.com/hanifedma/robot-6dof-opengl). The folder also holds a personal
+# academic PDF (with a student ID) that must NOT be published to the public site.
+portfolio/robot_6dof_opengl/
+
+# LaTeX portfolio: track only the source and the final PDF;
+# ignore all the latexmk build artifacts (.aux, .log, .fls, .fdb_latexmk,
+# .nav, .out, .snm, .toc) and the duplicate portfolio.pdf.
+portfolio-pdf/*
+!portfolio-pdf/portfolio.tex
+!portfolio-pdf/Portfolio_Hanif_Edma_Fauz.pdf
+resume/resume.aux
+resume/resume.fdb_latexmk
+resume/resume.fls
+resume/resume.log
+resume/resume.out
+resume/resume.pdf
+resume/resume.synctex.gz

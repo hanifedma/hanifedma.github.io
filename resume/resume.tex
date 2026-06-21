@@ -1,0 +1,163 @@
+\documentclass[a4paper,10pt]{article}
+
+% =========================================================
+% ATS OPTIMIZATION PACKAGES
+% These ensure the PDF text layer maps perfectly to standard 
+% Unicode, preventing scrambled words or broken ligatures (fi, fl)
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\input{glyphtounicode}
+\pdfgentounicode=1
+% =========================================================
+
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{mathptmx} % <--- Added Times New Roman font package
+\usepackage{microtype} % Improves spacing and prevents awkward line breaks
+
+% \renewcommand{\familydefault}{\sfdefault} <--- Make sure this is removed or commented out
+
+% Prevent ATS from splitting keywords across line breaks (e.g., "en-gineering")
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    % Added metadata for ATS parsers to easily identify the file
+    pdftitle={Hanif Edma Fauz - Resume},
+    pdfauthor={Hanif Edma Fauz},
+    pdfcreator={LaTeX}
+}
+
+% Format sections
+\titleformat{\section}{\large\bfseries\uppercase}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{10pt}
+
+% Force standard text bullets for ATS readability (math mode $\bullet$ can confuse basic parsers)
+\renewcommand{\labelitemi}{\textbullet}
+
+\begin{document}
+\pagestyle{empty}
+
+\begin{center}
+    {\Large \textbf{HANIF EDMA FAUZ}} \\ \vspace{10pt}
+
+    % Replaced \ \textbar \ with \quad | \quad for cleaner raw text extraction
+    +821095158838 \quad | \quad \href{mailto:hanifedmafauz@gmail.com}{hanifedmafauz@gmail.com} \quad | \quad \href{https://www.linkedin.com/in/hanif-edma/}{linkedin.com/in/hanif-edma/} \quad | \quad \href{https://hanifedma.com/}{hanifedma.com/}
+\end{center}
+
+\section*{Technical Skills \& Languages}
+
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \textbf{Skills:} Electrical engineering, robotic engineering, control engineering, IT
+    \item \textbf{Programming \& Software:} Robot Operating System (ROS1/ROS2), Gazebo, move\_base/Nav2, C/C++, Linux, Git, Docker, RTOS (FreeRTOS ESP32), Web Development, Flutter
+    \item \textbf{Hardware \& IoT Devices:} NVIDIA Jetson, Raspberry Pi, Arduino, ESP32
+    \item \textbf{Languages:} Bahasa Indonesia (native), English (IELTS Academic Band 7.0, 2023), Korean (beginner)
+\end{itemize}
+
+\section*{Education Level}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{Seoul National University of Science and Technology (SEOULTECH)} \\
+    \textit{Master of Electrical and Information Engineering, 4.19/4.50}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Seoul, South Korea \\
+    Feb 2024 -- Aug 2026 (Expected)
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Recipient of SEOULTECH scholarship; Research Assistant; specialization in control engineering and robotics
+\end{itemize}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{Universitas Indonesia} \\
+    \textit{Bachelor of Electrical Engineering, 3.61/4.00}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Depok, Indonesia \\
+    Aug 2019 -- Aug 2023
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Special elective robotics and control engineering
+\end{itemize}
+
+\section*{Work Experiences}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{Control \& Intelligent Robotics Lab SEOULTECH (CIRL SEOULTECH)} \\
+    \textit{Research Assistant}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Seoul, South Korea \\
+    Feb 2024 -- Present
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \textbf{[Published, 1st Author]} ``Performance Enhanced Risk-Aware MPPI using Gaussian Process for Robust Mobile Robot Control'', \textit{IEEE Access} (SCI Q1, 2025); integrated offline Gaussian Process (GP) uncertainty estimation with Risk-Aware MPPI (RA-MPPI), validated on F1TENTH and Clearpath Jackal
+    \item \textbf{[Submitted, 1st Author]} ``Robust RA-MPPI using Online Learning'', submitted to IJCAS, Springer; online Sparse Gaussian Process (SGP) learning for real-time model correction and risk-aware trajectory sampling, applied to mobile robot control
+    \item \textbf{[Ongoing]} Developing an imitation learning-based controller to replicate Model Predictive Contouring Control (MPCC) for mobile robot navigation, augmented with Disturbance Observer-Based (DOB) control
+    \item \textbf{[Ongoing]} Developing a stability-guaranteed MPPI variant that samples feedback gain $K$ instead of control input $u$, ensuring $u = -Kx$ satisfies local stability via closed-loop eigenvalue constraints
+\end{itemize}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{Universitas Indonesia} \\
+    \textit{Research Assistant (Undergraduate Thesis)}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Depok, Indonesia \\
+    Jan 2023 -- Jun 2023
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Implemented an Equivalent Circuit Model (ECM)-based Adaptive Extended Kalman Filter (AEKF) with online parameter identification via Variable Recursive Least Squares (VRLS) for State of Charge (SoC) estimation of Li-Ion batteries in MATLAB simulation
+    \item Achieved SoC RMSE of 0.02827 (LiFePO4) and 0.01517 (LiCoO2), outperforming Extended Kalman Filter (EKF) and Coulomb Counting baselines
+\end{itemize}
+
+\section*{Other Projects}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{6-DOF Robot Manipulator Simulation (OpenGL)} \\
+    \textit{Robotics Course Project -- Universitas Indonesia}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Depok, Indonesia \\
+    2022
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Built a real-time 3D visualization of a 6-DOF robot arm in C/OpenGL (GLUT), implementing forward kinematics and Jacobian pseudoinverse-based inverse kinematics for end-effector position control
+    \item Generated linear point-to-point trajectories and streamed joint commands to the physical robot over serial communication
+\end{itemize}
+
+\noindent
+\begin{minipage}[t]{0.68\textwidth}
+    \textbf{Corrosion Detection Application} \\
+    \textit{1st Champion -- SciHackfest 2023 (Hackathon), PT Sucofindo}
+\end{minipage}%
+\begin{minipage}[t]{0.32\textwidth}
+    \raggedleft
+    Jakarta, Indonesia \\
+    Sep 2023
+\end{minipage}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Developed a computer vision (CV) system for corrosion detection and built the Android version of the application using Flutter (compatible with Windows, Linux, and Android) within a 1-month timeframe; awarded 1st place and a prize of 25 million IDR (\textasciitilde{}1,600 USD) as a team of 3 people
+\end{itemize}
+
+
+\end{document}
