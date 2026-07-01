@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<!-- "preload" disables transitions until the first paint so the theme/toggle
+     don't animate on load. It is removed by script once rendering settles. -->
+<html lang="en" class="preload">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Portfolio presentation of Hanif Edma — research and engineering projects framed as objective, outcome, and technical skills.">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Portfolio Presentation — Hanif Edma</title>
+    <!-- Apply the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
+            }
+        } catch (e) { /* localStorage may be unavailable; default theme is fine */ }
+    </script>
+    <link rel="apple-touch-icon" sizes="180x180" href="../favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon/favicon-16x16.png">
+    <link rel="manifest" href="../favicon/site.webmanifest">
+    <style>
+        /* --- Setup & Variables --- */
+        :root {
+            --bg: #0f0f0f;
+            --text-primary: #f0f0f0;
+            --text-secondary: #e0e0e0;
+            --accent: #3b82f6;
+            --border: #333333;
+            --card-bg: #1a1a1a;
+            --font-main: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #404040;
+            --accent: #2563eb;
+            --border: #e5e7eb;
+            --card-bg: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body,
+        header,
+        h1,
+        h2,
+        p,
+        a,
+        .project ul,
+        .section-label,
+        .block-label,
+        .tag,
+        .project,
+        .project-media img,
+        .project-media video {
+            transition: background-color 2s, color 2s, border-color 2s, fill 2s;
+        }
+
+        /* No animations until the page has painted once (see <html class="preload">). */
+        .preload *,
+        .preload *::before {
+            transition: none !important;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.75;
+            font-size: 1.02rem;
+            padding: 3.5rem 3rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        /* --- Top bar (home link + theme toggle) --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .home-link {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .home-link:hover {
+            transition: color 0s;
+            color: var(--accent);
+        }
+
+        /* --- Theme toggle (mechanism unchanged from the portfolio page) --- */
+        .theme-switch-wrapper {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 42px;
+            position: relative;
+            width: 110px;
+            padding: 2px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: #73b3d1;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: 2s;
+            border-radius: 34px;
+            overflow: hidden;
+            box-shadow:
+                inset 0 8px 12px rgba(0, 0, 0, 0.4),
+                inset 0 -2px 8px rgba(255, 255, 255, 0.1),
+                0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .slider:before {
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #ffdb50 70%);
+            box-shadow:
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 0 15px 2px rgba(255, 219, 80, 0.6);
+            bottom: 6px;
+            content: "";
+            height: 30px;
+            left: 6px;
+            position: absolute;
+            transition: 2s;
+            width: 30px;
+            border-radius: 50%;
+            z-index: 9;
+        }
+
+        .mode-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+            transition: 2s;
+            z-index: 5;
+            width: 100%;
+            text-align: center;
+        }
+
+        .text-light {
+            color: #fff;
+            padding-left: 30px;
+            opacity: 1;
+        }
+
+        .text-dark {
+            color: #fff;
+            padding-right: 30px;
+            opacity: 0;
+        }
+
+        input:checked+.slider {
+            background-color: #1a2238;
+        }
+
+        input:checked+.slider:before {
+            transition: transform 2s, background-image 2s, box-shadow 2s;
+            transform: translateX(68px);
+            background-color: #ffffff;
+            background-image:
+                radial-gradient(circle at 35% 30%, #e5e5d1 18%, transparent 18.1%),
+                radial-gradient(circle at 65% 50%, #e5e5d1 14%, transparent 14.1%),
+                radial-gradient(circle at 25% 70%, #e5e5d1 10%, transparent 10.1%),
+                radial-gradient(circle at 75% 85%, #e5e5d1 8%, transparent 8.1%);
+            box-shadow:
+                -4px 4px 10px rgba(0, 0, 0, 0.5),
+                0 0 15px 5px rgba(255, 255, 255, 0.4);
+        }
+
+        input:checked+.slider .text-light {
+            opacity: 0;
+        }
+
+        input:checked+.slider .text-dark {
+            opacity: 1;
+        }
+
+        .clouds {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: 2s;
+            z-index: 10;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.9;
+            filter: blur(2px);
+        }
+
+        .cloud:nth-child(1) { width: 18px; height: 18px; top: 13px; right: 65px; }
+        .cloud:nth-child(2) { width: 14px; height: 14px; top: 18px; right: 75px; }
+        .cloud:nth-child(3) { width: 12px; height: 12px; top: 20px; right: 60px; }
+
+        input:checked+.slider .clouds {
+            transform: translateY(40px);
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: -38px;
+            transition: 2s;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px #fff;
+        }
+
+        .star:nth-child(1) { top: 10px; left: 15px; width: 3px; height: 3px; }
+        .star:nth-child(2) { top: 5px; left: 35px; width: 2px; height: 2px; }
+        .star:nth-child(3) { top: 30px; left: 50px; width: 2px; height: 2px; }
+
+        input:checked+.slider .stars {
+            transform: translateY(38px);
+        }
+
+        /* --- Page header --- */
+        header h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-bottom: 0.9rem;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            line-height: 1.65;
+            color: var(--text-secondary);
+        }
+
+        /* --- Sections & projects --- */
+        .section-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin: 3.5rem 0 0.5rem;
+        }
+
+        /* Big gap between blocks so each project reads like a separate slide. */
+        .project {
+            display: flex;
+            flex-direction: column;
+            padding: 4rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Media (images/video) sits right after the title, before the text blocks. */
+        .project h2 {
+            order: -2;
+        }
+
+        .project .media-row,
+        .project .project-media {
+            order: -1;
+        }
+
+        /* Small author / venue note sits at the very bottom, under the links. */
+        .project .paper-note {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 0.85rem;
+        }
+
+        /* The first block after a section label hugs it (no oversized gap there). */
+        .section-label + .project {
+            padding-top: 1.25rem;
+            border-top: none;
+        }
+
+        .project h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Objective / Outcome / Technical skills sub-headings (the slide blocks) */
+        .block-label {
+            display: block;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1.08rem;
+            margin: 2rem 0 0.7rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 0.75rem 0;
+        }
+
+        .tag {
+            font-size: 0.86rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .project p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0 0.75rem;
+        }
+
+        .project ul {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0 0.75rem;
+            padding-left: 1.4rem;
+        }
+
+        .project li {
+            margin-bottom: 0.6rem;
+        }
+
+        .meta {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 1.1rem;
+        }
+
+        .hw {
+            font-size: 0.98rem;
+            color: var(--text-secondary);
+            margin: 0.75rem 0 0;
+        }
+
+        .project-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.75rem;
+        }
+
+        .project-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .project-links a:hover {
+            transition: border-color 0.15s;
+            border-color: var(--accent);
+        }
+
+        /* Two media panels side by side on wide screens, stacked on small ones */
+        .media-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            margin-top: 1.75rem;
+        }
+
+        .media-row .panel {
+            flex: 1 1 300px;
+            margin: 0;
+        }
+
+        .panel figcaption {
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+            margin-top: 0.6rem;
+        }
+
+        .project-media {
+            margin-top: 1.25rem;
+            max-width: 480px;
+        }
+
+        .project-media img,
+        .project-media video,
+        .panel img,
+        .panel video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 2rem 1.5rem;
+            }
+
+            .project {
+                padding: 2.5rem 0;
+            }
+
+            .project-media {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+        <div class="top-bar">
+            <a href="../portfolio/" class="home-link">&larr; Portfolio</a>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider">
+                        <span class="mode-text text-light">Light</span>
+                        <span class="mode-text text-dark">Dark</span>
+
+                        <div class="clouds">
+                            <div class="cloud"></div>
+                            <div class="cloud"></div>
+                            <div class="cloud"></div>
+                        </div>
+                        <div class="stars">
+                            <div class="star"></div>
+                            <div class="star"></div>
+                            <div class="star"></div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <header>
+            <h1>Portfolio Presentation</h1>
+            <p class="lead">Hanif Edma — research and engineering projects, framed as objective, outcome, and technical
+                skills.</p>
+        </header>
+
+        <!-- ===================== BACKGROUND ===================== -->
+        <p class="section-label">Background</p>
+
+        <article class="project">
+            <h2>Education</h2>
+            <ul>
+                <li><strong>Seoul National University of Science and Technology (SEOULTECH)</strong><br>
+                    M.S., Electrical &amp; Information Engineering — GPA 4.19&nbsp;/&nbsp;4.50<br>
+                    Seoul, South Korea · Feb 2024 – Aug 2026 (Expected) · Research Assistant</li>
+                <li><strong>Universitas Indonesia</strong><br>
+                    B.S., Electrical Engineering — GPA 3.61&nbsp;/&nbsp;4.00<br>
+                    Depok, Indonesia · Aug 2019 – Aug 2023</li>
+            </ul>
+        </article>
+
+        <article class="project">
+            <h2>Technical Skills</h2>
+            <p>Focus: Robotics (mobile robots) · Control &amp; Estimation · Electrical Engineering</p>
+            <ul>
+                <li><strong>Control &amp; Estimation:</strong> MPC / MPPI / MPCC, PID, LQR, Kalman Filter (KF/EKF), 2D
+                    SLAM, Motion Planning &amp; Trajectory Optimization</li>
+                <li><strong>Machine Learning:</strong> Gaussian Process (GP/SGP), Neural Networks, Imitation Learning,
+                    PyTorch &amp; TensorFlow (basic)</li>
+                <li><strong>Programming &amp; Frameworks:</strong> ROS1 / ROS2, C/C++, Python, MATLAB/Simulink, CasADi,
+                    Flutter, HTML/CSS/JS, OpenCV (basic)</li>
+                <li><strong>Tools &amp; Platforms:</strong> Gazebo, move_base, Linux, Git, Docker</li>
+                <li><strong>Hardware &amp; IoT:</strong> NVIDIA Jetson, Raspberry Pi, Arduino, ESP32</li>
+            </ul>
+        </article>
+
+        <!-- ===================== RESEARCH ===================== -->
+        <p class="section-label">Research</p>
+
+        <article class="project">
+            <h2>Performance-Enhanced Risk-Aware MPPI using Gaussian Process</h2>
+
+            <span class="block-label">Objective</span>
+            <p>Drive a robot safely despite the model–reality gap, without hand-tuning the controller's safety level.</p>
+
+            <span class="block-label">Outcome / Contribution</span>
+            <ul>
+                <li>A Gaussian Process learns the model gap offline and <strong>sets the safety level
+                        automatically</strong> (risk-aware MPPI) — no manual tuning.</li>
+                <li>On F1TENTH (sim + real): finished every obstacle lap where baselines crashed, at the same speed.</li>
+            </ul>
+
+            <span class="block-label">Technical skills</span>
+            <div class="tags">
+                <span class="tag">Gaussian Process</span>
+                <span class="tag">MPPI / sampling MPC</span>
+                <span class="tag">Localization &amp; mapping (SLAM)</span>
+                <span class="tag">ROS1</span>
+                <span class="tag">move_base (Nav2 equivalent)</span>
+                <span class="tag">Gazebo</span>
+                <span class="tag">PyTorch</span>
+                <span class="tag">PyCUDA</span>
+                <span class="tag">Python</span>
+                <span class="tag">C/C++</span>
+            </div>
+            <p class="hw"><strong>Hardware:</strong> Jetson Orin · LiDAR · IMU · wheel odometry · VESC</p>
+
+            <div class="media-row">
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="854" height="485"
+                        poster="propose_rw_poster.jpg">
+                        <source src="propose_rw_demo.mp4" type="video/mp4">
+                    </video>
+                    <figcaption>Real-world run — proposed method</figcaption>
+                </figure>
+            </div>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="../portfolio/gpramppi.webp" type="image/webp">
+                        <img src="../portfolio/gpramppi.jpg"
+                            alt="Method framework: offline data collection, Gaussian Process, and online risk-aware MPPI control"
+                            loading="lazy" width="843" height="403">
+                    </picture>
+                    <figcaption>Method framework</figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="../portfolio/f1tenth_car.webp" type="image/webp">
+                        <img src="../portfolio/f1tenth_car.jpg"
+                            alt="The F1TENTH autonomous car platform with Hokuyo LiDAR, Jetson Orin NX, VESC, and IMU"
+                            loading="lazy" width="1000" height="563">
+                    </picture>
+                    <figcaption>F1TENTH platform</figcaption>
+                </figure>
+            </div>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p1_sim_w_obs.webp" type="image/webp">
+                        <img src="p1_sim_w_obs.jpg" alt="Simulation trajectory with obstacles" loading="lazy"
+                            width="900" height="565">
+                    </picture>
+                    <figcaption>Simulation — with obstacles</figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p1_sim_wo_obs.webp" type="image/webp">
+                        <img src="p1_sim_wo_obs.jpg" alt="Simulation trajectory without obstacles" loading="lazy"
+                            width="900" height="571">
+                    </picture>
+                    <figcaption>Simulation — without obstacles</figcaption>
+                </figure>
+            </div>
+
+            <div class="project-links">
+                <a href="https://gp-ramppi.github.io/" target="_blank" rel="noopener">Images, video &amp; explanation
+                    &rarr;</a>
+                <a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank" rel="noopener">Paper (IEEE Access,
+                    1st author) &rarr;</a>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>Robust RA-MPPI using Online Learning</h2>
+
+            <span class="block-label">Objective</span>
+            <p>Adapt to uncertainty in real time — learn the model gap <strong>while driving</strong>, with no data
+                collected beforehand.</p>
+
+            <span class="block-label">Outcome / Contribution</span>
+            <ul>
+                <li>A Sparse Gaussian Process learns the gap <strong>online</strong> in the background, never slowing the
+                    controller.</li>
+                <li>On F1TENTH (sim, with obstacles): <strong>22 laps vs. 16</strong> for the previous method, still real
+                    time.</li>
+            </ul>
+
+            <span class="block-label">Technical skills</span>
+            <div class="tags">
+                <span class="tag">Sparse Gaussian Process (online learning)</span>
+                <span class="tag">MPPI / sampling MPC</span>
+                <span class="tag">Localization &amp; mapping (SLAM)</span>
+                <span class="tag">ROS1</span>
+                <span class="tag">move_base (Nav2 equivalent)</span>
+                <span class="tag">Gazebo</span>
+                <span class="tag">PyTorch</span>
+                <span class="tag">PyCUDA</span>
+                <span class="tag">Python</span>
+                <span class="tag">C/C++</span>
+            </div>
+            <p class="hw"><strong>Hardware:</strong> Jetson Orin · LiDAR · IMU · wheel odometry · VESC</p>
+
+            <div class="media-row">
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="736" height="480"
+                        poster="sgpmppi_sim_poster.jpg">
+                        <source src="sgpmppi_sim_demo.webm" type="video/webm">
+                    </video>
+                    <figcaption>Simulation (Gazebo)</figcaption>
+                </figure>
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="850" height="480"
+                        poster="sgpmppi_real_poster.jpg">
+                        <source src="sgpmppi_real_demo.webm" type="video/webm">
+                    </video>
+                    <figcaption>Real-world run — proposed method</figcaption>
+                </figure>
+            </div>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="../portfolio/sgpmppi.webp" type="image/webp">
+                        <img src="../portfolio/sgpmppi.jpg"
+                            alt="Control scheme: a Sparse Gaussian Process feeding a risk-aware MPPI controller in the loop"
+                            loading="lazy" width="900" height="624">
+                    </picture>
+                    <figcaption>Control scheme</figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p2_sampling.webp" type="image/webp">
+                        <img src="p2_sampling.jpg" alt="Online trajectory sampling around the vehicle" loading="lazy"
+                            width="760" height="732">
+                    </picture>
+                    <figcaption>Online sampling</figcaption>
+                </figure>
+            </div>
+
+            <div class="project-links">
+                <a href="https://sgp-mppi.github.io/" target="_blank" rel="noopener">Images, video &amp; explanation
+                    &rarr;</a>
+            </div>
+            <p class="paper-note">1st author · Submitted to IJCAS (Springer)</p>
+        </article>
+
+        <!-- ===================== ENGINEERING PROJECTS ===================== -->
+        <p class="section-label">Engineering Projects</p>
+
+        <article class="project">
+            <h2>ESP32 IoT Medical Gateway</h2>
+
+            <span class="block-label">Objective</span>
+            <p>Connect medical instruments to the cloud for posyandu (community health post) measurements.</p>
+
+            <span class="block-label">Outcome / Contribution</span>
+            <ul>
+                <li>Built an ESP32 gateway linking thermometers, oximeters, and biometric sensors.</li>
+                <li>Connected over six categories of medical devices.</li>
+            </ul>
+
+            <span class="block-label">Technical skills</span>
+            <div class="tags">
+                <span class="tag">Embedded / IoT</span>
+                <span class="tag">RTOS (FreeRTOS)</span>
+                <span class="tag">BLE connectivity</span>
+                <span class="tag">Reverse engineering</span>
+                <span class="tag">C/C++</span>
+            </div>
+            <p class="hw"><strong>Hardware:</strong> ESP32</p>
+            <p class="meta">Internship at DoctorTool · Team of 2 · 2022</p>
+
+            <div class="project-media">
+                <picture>
+                    <source srcset="../portfolio/iotm.webp" type="image/webp">
+                    <img src="../portfolio/iotm.jpg"
+                        alt="IoT medical gateway with connected thermometers, oximeter, scale, and blood-pressure monitor"
+                        loading="lazy" width="749" height="601">
+                </picture>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>6-DOF Robot Manipulator Simulation (OpenGL)</h2>
+
+            <span class="block-label">Objective</span>
+            <p>Visualize and control a 6-DOF robot arm in real time.</p>
+
+            <span class="block-label">Outcome / Contribution</span>
+            <ul>
+                <li>Real-time 3D arm in C/OpenGL (GLUT) with forward and Jacobian-pseudoinverse inverse kinematics.</li>
+                <li>Point-to-point trajectories, joint commands streamed over serial.</li>
+            </ul>
+
+            <span class="block-label">Technical skills</span>
+            <div class="tags">
+                <span class="tag">C</span>
+                <span class="tag">OpenGL / GLUT</span>
+                <span class="tag">Robot kinematics (FK/IK)</span>
+                <span class="tag">MATLAB</span>
+                <span class="tag">Robotics Toolbox (Peter Corke, MATLAB)</span>
+            </div>
+            <p class="meta">Course project · Universitas Indonesia · May 2023</p>
+
+            <div class="project-media">
+                <video muted loop playsinline preload="none" data-autoplay width="838" height="398"
+                    poster="../portfolio/robot6dof.jpg?v=2">
+                    <source src="../portfolio/robot6dof_demo.webm?v=2" type="video/webm">
+                </video>
+            </div>
+            <div class="project-links">
+                <a href="https://github.com/hanifedma/robot-6dof-opengl" target="_blank" rel="noopener">Source &rarr;</a>
+            </div>
+        </article>
+
+        <p class="section-label">Download</p>
+        <article class="project">
+            <div class="project-links">
+                <a href="Portfolio_Presentation_Hanif_Edma_Fauz.pdf" target="_blank" rel="noopener">Slides (PDF)
+                    &rarr;</a>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        const root = document.documentElement;
+        const toggleSwitch = document.querySelector('#checkbox');
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+
+        // The theme is set pre-paint in <head>; just reflect it on the toggle (checked = dark).
+        toggleSwitch.checked = root.getAttribute('data-theme') !== 'light';
+
+        toggleSwitch.addEventListener('change', () => {
+            const isDark = toggleSwitch.checked;
+            if (isDark) {
+                root.removeAttribute('data-theme');
+            } else {
+                root.setAttribute('data-theme', 'light');
+            }
+            themeColor.setAttribute('content', isDark ? '#0f0f0f' : '#ffffff');
+            try {
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            } catch (e) { /* storage may be unavailable; theme still applies for this visit */ }
+        });
+
+        // Looping demo clips (marked data-autoplay) start — and only then lazy-load —
+        // once scrolled into view, and pause when they leave, to keep load and CPU low.
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        if (video.dataset.autoplay !== undefined) video.play().catch(() => { });
+                    } else {
+                        video.pause();
+                    }
+                });
+            }, { threshold: 0.25 });
+            document.querySelectorAll('video').forEach((video) => observer.observe(video));
+        }
+
+        // Re-enable theme transitions once the initial frame has painted.
+        requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
+    </script>
+</body>
+
+</html>

@@ -24,3 +24,23 @@ resume/resume.log
 resume/resume.out
 resume/resume.pdf
 resume/resume.synctex.gz
+resume/resume_movensys.aux
+resume/resume_movensys.fdb_latexmk
+resume/resume_movensys.fls
+resume/resume_movensys.log
+resume/resume_movensys.out
+resume/resume_movensys.pdf
+resume/resume_movensys.synctex.gz
+portfolio_presentation/portfolio_presentation.aux
+portfolio_presentation/portfolio_presentation.fdb_latexmk
+portfolio_presentation/portfolio_presentation.fls
+portfolio_presentation/portfolio_presentation.log
+portfolio_presentation/portfolio_presentation.nav
+portfolio_presentation/portfolio_presentation.out
+portfolio_presentation/portfolio_presentation.snm
+portfolio_presentation/portfolio_presentation.toc
+
+# Heavy raw source for the 1st-paper real-world clip — kept local only.
+# The web page uses the compressed propose_rw_demo.mp4 + poster; the deck uses
+# propose_rw_1stpaper.png (both committed).
+portfolio_presentation/propose_rw_first_paper.mp4
