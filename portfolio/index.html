@@ -309,8 +309,15 @@
             color: var(--text-secondary);
         }
 
+        .present-footer {
+            margin-top: 3.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
         .present-link {
-            margin-top: 0.85rem;
+            margin-top: 0;
             font-size: 1.0625rem;
         }
 
@@ -322,6 +329,12 @@
         .present-link a:hover {
             transition: color 0s;
             text-decoration: underline;
+        }
+
+        .present-note {
+            margin-top: 0.5rem;
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
         }
 
         /* --- Sections & projects --- */
@@ -471,7 +484,6 @@
         <header>
             <h1>Portfolio</h1>
             <p class="lead">A selection of my research, engineering projects, and web apps.</p>
-            <p class="present-link"><a href="/portfolio_presentation/">View as a slide presentation &rarr;</a></p>
         </header>
 
         <p class="section-label">Research</p>
@@ -671,6 +683,11 @@
                 <a href="https://github.com/hanifedma/canopydiary" target="_blank">Source &rarr;</a>
             </div>
         </article>
+
+        <footer class="present-footer">
+            <p class="present-link"><a href="/portfolio_presentation/">View as a slide presentation &rarr;</a></p>
+            <p class="present-note">This slide presentation is prepared for interview purposes.</p>
+        </footer>
     </main>
 
     <script>
