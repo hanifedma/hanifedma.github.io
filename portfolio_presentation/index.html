@@ -800,6 +800,42 @@
             document.querySelectorAll('video').forEach((video) => observer.observe(video));
         }
 
+        // Reload an already-open tab once a new version is deployed. The check only
+        // runs when the tab becomes visible again, so it adds no idle/background work.
+        //
+        // deployedVersion has to describe the document on screen, not whatever the server
+        // holds right now. A revisit inside GitHub Pages' 10-minute max-age is painted from
+        // the browser cache without asking the server (transferSize 0), so for those we recall
+        // the validator stored when this copy was fetched. Starting from a fresh server probe
+        // instead would adopt the newer version as the baseline, and the visitor would sit on
+        // a stale page for as long as the tab stayed open.
+        const versionKey = 'version:' + location.pathname;
+        let deployedVersion = null;
+        try {
+            const nav = performance.getEntriesByType('navigation')[0];
+            if (nav && nav.transferSize === 0) deployedVersion = localStorage.getItem(versionKey);
+        } catch (e) { /* no Performance/localStorage: fall back to trusting the first probe */ }
+
+        async function checkForNewVersion() {
+            try {
+                const res = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+                const version = res.headers.get('etag') || res.headers.get('last-modified');
+                if (!version) return;
+                if (deployedVersion && version !== deployedVersion) {
+                    location.reload();
+                    return;
+                }
+                deployedVersion = version;
+                try {
+                    localStorage.setItem(versionKey, version);
+                } catch (e) { /* storage may be unavailable; the open tab still self-updates */ }
+            } catch (e) { /* offline or blocked — retry next time the tab is focused */ }
+        }
+        checkForNewVersion();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') checkForNewVersion();
+        });
+
         // Re-enable theme transitions once the initial frame has painted.
         requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
     </script>
