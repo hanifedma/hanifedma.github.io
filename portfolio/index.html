@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- "preload" disables transitions until the first paint so the theme/toggle
      don't animate on load. It is removed by script once rendering settles. -->
-<html lang="en" class="preload">
+<html lang="en" class="preload" data-lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -10,14 +10,44 @@
         content="Portfolio of Hanif Edma — research in robust robot control, IoT and computer-vision projects, and web apps.">
     <meta name="theme-color" content="#0f0f0f">
     <title>Portfolio — Hanif Edma</title>
-    <!-- Apply the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <!-- Apply the saved theme and language before first paint, so neither the colours
+         nor the text flash the wrong version on load. -->
     <script>
+        window.i18nMeta = {
+            en: {
+                title: 'Portfolio — Hanif Edma',
+                description: 'Portfolio of Hanif Edma — research in robust robot control, IoT and computer-vision projects, and web apps.'
+            },
+            ko: {
+                title: '포트폴리오 — Hanif Edma',
+                description: 'Hanif Edma의 포트폴리오 — 로봇 강건 제어 연구, IoT와 컴퓨터 비전 프로젝트, 그리고 웹 앱.'
+            }
+        };
         try {
             if (localStorage.getItem('theme') === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
             }
         } catch (e) { /* localStorage may be unavailable; default theme is fine */ }
+
+        // English is the default. Only an explicit choice moves off it: ?lang= first, so a
+        // link can be shared in one language, then whatever the visitor last picked. The
+        // markup carries both languages; this only decides which one CSS reveals.
+        (function () {
+            var lang = 'en';
+            try {
+                var asked = new URLSearchParams(location.search).get('lang');
+                var saved = localStorage.getItem('lang');
+                if (asked === 'ko' || asked === 'en') lang = asked;
+                else if (saved === 'ko' || saved === 'en') lang = saved;
+            } catch (e) { /* no URLSearchParams/localStorage — English it is */ }
+            var root = document.documentElement;
+            root.setAttribute('data-lang', lang);
+            root.setAttribute('lang', lang);
+            document.title = window.i18nMeta[lang].title;
+            var desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
+        })();
     </script>
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
@@ -48,6 +78,24 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        /* --- Language --------------------------------------------------------
+           Both languages ship in the markup and CSS reveals one, so switching
+           costs no request and cannot flash the wrong text. With JS off the
+           page stays in English, which is the default anyway. */
+        html[data-lang="en"] .t-ko,
+        html[data-lang="ko"] .t-en {
+            display: none;
+        }
+
+        /* Korean breaks lines between words rather than mid-word, and reads more
+           comfortably with a slightly looser line. A long Latin token (a URL) may
+           still break, otherwise it would overflow its column. */
+        html[data-lang="ko"] body {
+            line-height: 1.75;
+            word-break: keep-all;
+            overflow-wrap: break-word;
         }
 
         body,
@@ -106,6 +154,50 @@
         .home-link:hover {
             transition: color 0s;
             color: var(--accent);
+        }
+
+        /* Language switch and theme toggle share the right-hand end of the top bar. */
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--card-bg);
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1;
+            padding: 0.5rem 0.8rem;
+            border: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .lang-btn:hover {
+            color: var(--accent);
+        }
+
+        .lang-btn[aria-pressed="true"] {
+            background: var(--accent);
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .lang-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: -4px;
         }
 
         /* --- Theme toggle (mechanism unchanged from the home page) --- */
@@ -450,6 +542,16 @@
             .project-media {
                 max-width: 100%;
             }
+
+            /* Home link, language switch and theme toggle no longer fit on one line. */
+            .top-bar {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .top-actions {
+                gap: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -459,50 +561,82 @@
     <main class="container">
         <div class="top-bar">
             <a href="/" class="home-link">&larr; Hanif Edma</a>
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch" for="checkbox">
-                    <input type="checkbox" id="checkbox" />
-                    <div class="slider">
-                        <span class="mode-text text-light">Light</span>
-                        <span class="mode-text text-dark">Dark</span>
+            <div class="top-actions">
+                <div class="lang-switch" role="group" aria-label="Language / 언어">
+                    <button type="button" class="lang-btn" data-set-lang="en" aria-pressed="true">EN</button>
+                    <button type="button" class="lang-btn" data-set-lang="ko" lang="ko"
+                        aria-pressed="false">한국어</button>
+                </div>
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <div class="slider">
+                            <span class="mode-text text-light"><span class="t-en" lang="en">Light</span><span
+                                    class="t-ko" lang="ko">라이트</span></span>
+                            <span class="mode-text text-dark"><span class="t-en" lang="en">Dark</span><span class="t-ko"
+                                    lang="ko">다크</span></span>
 
-                        <div class="clouds">
-                            <div class="cloud"></div>
-                            <div class="cloud"></div>
-                            <div class="cloud"></div>
+                            <div class="clouds">
+                                <div class="cloud"></div>
+                                <div class="cloud"></div>
+                                <div class="cloud"></div>
+                            </div>
+                            <div class="stars">
+                                <div class="star"></div>
+                                <div class="star"></div>
+                                <div class="star"></div>
+                            </div>
                         </div>
-                        <div class="stars">
-                            <div class="star"></div>
-                            <div class="star"></div>
-                            <div class="star"></div>
-                        </div>
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
         </div>
 
         <header>
-            <h1>Portfolio</h1>
-            <p class="lead">A selection of my research, engineering projects, and web apps.</p>
+            <h1><span class="t-en" lang="en">Portfolio</span><span class="t-ko" lang="ko">포트폴리오</span></h1>
+            <p class="lead">
+                <span class="t-en" lang="en">A selection of my research, engineering projects, and web apps.</span>
+                <span class="t-ko" lang="ko">제 연구와 엔지니어링 프로젝트, 그리고 웹 앱을 모았습니다.</span>
+            </p>
         </header>
 
-        <p class="section-label">Research</p>
+        <p class="section-label"><span class="t-en" lang="en">Research</span><span class="t-ko"
+                lang="ko">연구</span></p>
 
         <article class="project">
-            <h2>Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust Mobile Robot Control</h2>
+            <h2>
+                <span class="t-en" lang="en">Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust
+                    Mobile Robot Control</span>
+                <span class="t-ko" lang="ko">강건한 이동 로봇 제어를 위한 가우시안 프로세스 기반 성능 향상 위험 인지 MPPI</span>
+            </h2>
             <div class="tags">
-                <span class="tag">Published</span>
-                <span class="tag">1st author</span>
+                <span class="tag"><span class="t-en" lang="en">Published</span><span class="t-ko"
+                        lang="ko">게재 완료</span></span>
+                <span class="tag"><span class="t-en" lang="en">1st author</span><span class="t-ko"
+                        lang="ko">제1저자</span></span>
                 <span class="tag">IEEE Access · SCI Q1</span>
                 <span class="tag">2025</span>
             </div>
             <ul>
-                <li>Trains a Gaussian Process to learn the gap between a robot's nominal model and its true dynamics.
+                <li>
+                    <span class="t-en" lang="en">Trains a Gaussian Process to learn the gap between a robot's nominal
+                        model and its true dynamics.</span>
+                    <span class="t-ko" lang="ko">가우시안 프로세스를 학습시켜 로봇의 공칭 모델과 실제 동역학 사이의 차이를 파악합니다.</span>
                 </li>
-                <li>Captures both the mean deviation and its uncertainty, feeding them into a risk-aware MPPI
-                    controller.</li>
-                <li>Improves tracking accuracy and safety over baseline controllers.</li>
-                <li>Validated in simulation and on real hardware (F1TENTH and Clearpath Jackal).</li>
+                <li>
+                    <span class="t-en" lang="en">Captures both the mean deviation and its uncertainty, feeding them into
+                        a risk-aware MPPI controller.</span>
+                    <span class="t-ko" lang="ko">평균 오차와 그 불확실성을 함께 포착해 위험 인지 MPPI 제어기에 전달합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Improves tracking accuracy and safety over baseline controllers.</span>
+                    <span class="t-ko" lang="ko">기준 제어기보다 경로 추종 정확도와 안전성이 향상됩니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Validated in simulation and on real hardware (F1TENTH and Clearpath
+                        Jackal).</span>
+                    <span class="t-ko" lang="ko">시뮬레이션과 실제 하드웨어(F1TENTH, Clearpath Jackal)에서 검증했습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -527,23 +661,48 @@
                 </video>
             </div>
             <div class="project-links">
-                <a href="https://gp-ramppi.github.io/" target="_blank">Images, video &amp; explanation &rarr;</a>
-                <a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">Paper (DOI) &rarr;</a>
+                <a href="https://gp-ramppi.github.io/" target="_blank">
+                    <span class="t-en" lang="en">Images, video &amp; explanation &rarr;</span>
+                    <span class="t-ko" lang="ko">이미지 · 영상 · 설명 &rarr;</span>
+                </a>
+                <a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">
+                    <span class="t-en" lang="en">Paper (DOI) &rarr;</span>
+                    <span class="t-ko" lang="ko">논문 (DOI) &rarr;</span>
+                </a>
             </div>
         </article>
 
         <article class="project">
-            <h2>Robust RA-MPPI using Online Learning</h2>
+            <h2>
+                <span class="t-en" lang="en">Robust RA-MPPI using Online Learning</span>
+                <span class="t-ko" lang="ko">온라인 학습을 이용한 강건한 RA-MPPI</span>
+            </h2>
             <div class="tags">
-                <span class="tag">Submitted to IJCAS · Springer</span>
-                <span class="tag">1st author</span>
+                <span class="tag"><span class="t-en" lang="en">Submitted to IJCAS · Springer</span><span class="t-ko"
+                        lang="ko">IJCAS · Springer 투고</span></span>
+                <span class="tag"><span class="t-en" lang="en">1st author</span><span class="t-ko"
+                        lang="ko">제1저자</span></span>
             </div>
             <ul>
-                <li>Combines risk-aware MPPI control with online learning.</li>
-                <li>A Sparse Gaussian Process identifies and quantifies model–reality discrepancies during operation.
+                <li>
+                    <span class="t-en" lang="en">Combines risk-aware MPPI control with online learning.</span>
+                    <span class="t-ko" lang="ko">위험 인지 MPPI 제어와 온라인 학습을 결합합니다.</span>
                 </li>
-                <li>The controller uses this learned uncertainty to improve robustness and collision avoidance.</li>
-                <li>Demonstrated on an autonomous vehicle with better trajectory tracking than standard MPPI.</li>
+                <li>
+                    <span class="t-en" lang="en">A Sparse Gaussian Process identifies and quantifies model–reality
+                        discrepancies during operation.</span>
+                    <span class="t-ko" lang="ko">희소 가우시안 프로세스가 주행 중에 모델과 실제 사이의 오차를 식별하고 정량화합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">The controller uses this learned uncertainty to improve robustness and
+                        collision avoidance.</span>
+                    <span class="t-ko" lang="ko">제어기는 학습된 불확실성을 이용해 강건성과 충돌 회피 성능을 높입니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Demonstrated on an autonomous vehicle with better trajectory tracking
+                        than standard MPPI.</span>
+                    <span class="t-ko" lang="ko">자율주행 차량에서 기존 MPPI보다 나은 경로 추종 성능을 보였습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -560,27 +719,55 @@
                 </video>
             </div>
             <div class="project-links">
-                <a href="https://sgp-mppi.github.io/" target="_blank">Images, video &amp; explanation &rarr;</a>
+                <a href="https://sgp-mppi.github.io/" target="_blank">
+                    <span class="t-en" lang="en">Images, video &amp; explanation &rarr;</span>
+                    <span class="t-ko" lang="ko">이미지 · 영상 · 설명 &rarr;</span>
+                </a>
             </div>
         </article>
 
-        <p class="section-label">Engineering Projects</p>
+        <p class="section-label"><span class="t-en" lang="en">Engineering Projects</span><span class="t-ko"
+                lang="ko">엔지니어링 프로젝트</span></p>
 
         <article class="project">
-            <h2>ESP32 IoT Medical Gateway</h2>
+            <h2>
+                <span class="t-en" lang="en">ESP32 IoT Medical Gateway</span>
+                <span class="t-ko" lang="ko">ESP32 IoT 의료기기 게이트웨이</span>
+            </h2>
             <div class="tags">
-                <span class="tag">Internship</span>
-                <span class="tag">Team of 2</span>
-                <span class="tag">Embedded / IoT</span>
+                <span class="tag"><span class="t-en" lang="en">Internship</span><span class="t-ko"
+                        lang="ko">인턴십</span></span>
+                <span class="tag"><span class="t-en" lang="en">Team of 2</span><span class="t-ko"
+                        lang="ko">2인 팀</span></span>
+                <span class="tag"><span class="t-en" lang="en">Embedded / IoT</span><span class="t-ko"
+                        lang="ko">임베디드 / IoT</span></span>
                 <span class="tag">ESP32</span>
                 <span class="tag">2022</span>
             </div>
             <ul>
-                <li>Built as an IoT Engineer Intern at DoctorTool (PT Medifa Infoyasa Suryantara).</li>
-                <li>Developed an ESP32-based IoT gateway bridging medical instruments to the cloud.</li>
-                <li>Connects thermometers, oximeters, and biometric sensors.</li>
-                <li>Supports over six device categories.</li>
-                <li>Built as a team of 2 people.</li>
+                <li>
+                    <span class="t-en" lang="en">Built as an IoT Engineer Intern at DoctorTool (PT Medifa Infoyasa
+                        Suryantara).</span>
+                    <span class="t-ko" lang="ko">DoctorTool(PT Medifa Infoyasa Suryantara)에서 IoT 엔지니어 인턴으로
+                        개발했습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Developed an ESP32-based IoT gateway bridging medical instruments to
+                        the cloud.</span>
+                    <span class="t-ko" lang="ko">의료 기기를 클라우드에 연결하는 ESP32 기반 IoT 게이트웨이를 개발했습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Connects thermometers, oximeters, and biometric sensors.</span>
+                    <span class="t-ko" lang="ko">체온계, 산소포화도 측정기, 생체 신호 센서를 연결합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Supports over six device categories.</span>
+                    <span class="t-ko" lang="ko">여섯 가지가 넘는 기기 유형을 지원합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Built as a team of 2 people.</span>
+                    <span class="t-ko" lang="ko">2인 팀으로 진행했습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -593,21 +780,47 @@
         </article>
 
         <article class="project">
-            <h2>6-DOF Robot Manipulator Simulation (OpenGL)</h2>
+            <h2>
+                <span class="t-en" lang="en">6-DOF Robot Manipulator Simulation (OpenGL)</span>
+                <span class="t-ko" lang="ko">6자유도 로봇 매니퓰레이터 시뮬레이션 (OpenGL)</span>
+            </h2>
             <div class="tags">
-                <span class="tag">Robotics course project</span>
-                <span class="tag">Robot kinematics</span>
+                <span class="tag"><span class="t-en" lang="en">Robotics course project</span><span class="t-ko"
+                        lang="ko">로보틱스 수업 프로젝트</span></span>
+                <span class="tag"><span class="t-en" lang="en">Robot kinematics</span><span class="t-ko"
+                        lang="ko">로봇 기구학</span></span>
                 <span class="tag">C / OpenGL</span>
-                <span class="tag">Universitas Indonesia</span>
-                <span class="tag">May 2023</span>
+                <span class="tag"><span class="t-en" lang="en">Universitas Indonesia</span><span class="t-ko"
+                        lang="ko">인도네시아대학교</span></span>
+                <span class="tag"><span class="t-en" lang="en">May 2023</span><span class="t-ko"
+                        lang="ko">2023년 5월</span></span>
             </div>
             <ul>
-                <li>Built as a project for a robotics course at Universitas Indonesia.</li>
-                <li>Real-time 3D visualization of a 6-DOF robot arm, built in C with OpenGL (GLUT).</li>
-                <li>Implements forward kinematics and Jacobian pseudoinverse-based inverse kinematics for end-effector
-                    position control.</li>
-                <li>Generates linear point-to-point trajectories between commanded poses.</li>
-                <li>Streams joint commands to the physical robot over serial communication.</li>
+                <li>
+                    <span class="t-en" lang="en">Built as a project for a robotics course at Universitas
+                        Indonesia.</span>
+                    <span class="t-ko" lang="ko">인도네시아대학교 로보틱스 수업의 프로젝트로 만들었습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Real-time 3D visualization of a 6-DOF robot arm, built in C with OpenGL
+                        (GLUT).</span>
+                    <span class="t-ko" lang="ko">C와 OpenGL(GLUT)로 6자유도 로봇 팔을 실시간 3D로 시각화합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Implements forward kinematics and Jacobian pseudoinverse-based inverse
+                        kinematics for end-effector position control.</span>
+                    <span class="t-ko" lang="ko">엔드 이펙터의 위치 제어를 위해 순기구학과 자코비안 유사역행렬 기반 역기구학을 구현했습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Generates linear point-to-point trajectories between commanded
+                        poses.</span>
+                    <span class="t-ko" lang="ko">지정한 자세 사이를 잇는 직선 점대점 궤적을 생성합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Streams joint commands to the physical robot over serial
+                        communication.</span>
+                    <span class="t-ko" lang="ko">시리얼 통신으로 실제 로봇에 관절 명령을 전송합니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <video muted loop playsinline preload="none" data-autoplay width="838" height="398"
@@ -616,27 +829,52 @@
                 </video>
             </div>
             <div class="project-links">
-                <a href="https://github.com/hanifedma/robot-6dof-opengl" target="_blank">Source &rarr;</a>
+                <a href="https://github.com/hanifedma/robot-6dof-opengl" target="_blank">
+                    <span class="t-en" lang="en">Source &rarr;</span>
+                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                </a>
             </div>
         </article>
 
         <article class="project">
-            <h2>Corrosion Detection App (Computer Vision)</h2>
+            <h2>
+                <span class="t-en" lang="en">Corrosion Detection App (Computer Vision)</span>
+                <span class="t-ko" lang="ko">부식 탐지 앱 (컴퓨터 비전)</span>
+            </h2>
             <div class="tags">
-                <span class="tag award">🏆 1st place</span>
-                <span class="tag">Hackathon</span>
-                <span class="tag">Prize 25M IDR (~$1,600)</span>
-                <span class="tag">Team of 3</span>
+                <span class="tag award"><span class="t-en" lang="en">🏆 1st place</span><span class="t-ko"
+                        lang="ko">🏆 1위</span></span>
+                <span class="tag"><span class="t-en" lang="en">Hackathon</span><span class="t-ko"
+                        lang="ko">해커톤</span></span>
+                <span class="tag"><span class="t-en" lang="en">Prize 25M IDR (~$1,600)</span><span class="t-ko"
+                        lang="ko">상금 2,500만 IDR (약 1,600달러)</span></span>
+                <span class="tag"><span class="t-en" lang="en">Team of 3</span><span class="t-ko"
+                        lang="ko">3인 팀</span></span>
                 <span class="tag">Flutter</span>
-                <span class="tag">Computer Vision</span>
+                <span class="tag"><span class="t-en" lang="en">Computer Vision</span><span class="t-ko"
+                        lang="ko">컴퓨터 비전</span></span>
                 <span class="tag">2023</span>
             </div>
             <ul>
-                <li>Built a computer-vision system for corrosion detection.</li>
-                <li>Shipped the Android app with Flutter (also runs on Windows and Linux).</li>
-                <li>Delivered within a one-month timeframe.</li>
-                <li>Won 1st place at SciHackfest 2023 (a hackathon held by PT Sucofindo) — prize of 25 million IDR
-                    (~1,600 USD), as a team of 3.</li>
+                <li>
+                    <span class="t-en" lang="en">Built a computer-vision system for corrosion detection.</span>
+                    <span class="t-ko" lang="ko">부식을 탐지하는 컴퓨터 비전 시스템을 만들었습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Shipped the Android app with Flutter (also runs on Windows and
+                        Linux).</span>
+                    <span class="t-ko" lang="ko">Flutter로 안드로이드 앱을 출시했으며, 윈도우와 리눅스에서도 동작합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Delivered within a one-month timeframe.</span>
+                    <span class="t-ko" lang="ko">한 달 안에 완성했습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Won 1st place at SciHackfest 2023 (a hackathon held by PT Sucofindo) —
+                        prize of 25 million IDR (~1,600 USD), as a team of 3.</span>
+                    <span class="t-ko" lang="ko">PT Sucofindo가 주최한 SciHackfest 2023에서 3인 팀으로 1위를 차지해 상금 2,500만
+                        IDR(약 1,600달러)를 받았습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <video controls preload="none" playsinline width="960" height="720" poster="corrosion_poster.jpg">
@@ -653,21 +891,37 @@
             </div>
         </article>
 
-        <p class="section-label">Web Apps</p>
+        <p class="section-label"><span class="t-en" lang="en">Web Apps</span><span class="t-ko"
+                lang="ko">웹 앱</span></p>
 
         <article class="project">
             <h2>CanopyDiary</h2>
             <div class="tags">
-                <span class="tag">Web app</span>
-                <span class="tag">Vanilla JS</span>
+                <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
+                        lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
+                        lang="ko">바닐라 JS</span></span>
                 <span class="tag">Supabase</span>
                 <span class="tag">PWA</span>
             </div>
             <ul>
-                <li>Lightweight, local-first diary web app with dated notes.</li>
-                <li>Date-sorted photo gallery kept separate from the written notes.</li>
-                <li>Autosave and manual PDF export for selected date ranges.</li>
-                <li>Optional cloud sync via Supabase + Google sign-in; built with vanilla JavaScript, HTML, and CSS.
+                <li>
+                    <span class="t-en" lang="en">Lightweight, local-first diary web app with dated notes.</span>
+                    <span class="t-ko" lang="ko">날짜별로 기록을 남기는, 가볍고 로컬 우선으로 동작하는 일기 웹 앱입니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Date-sorted photo gallery kept separate from the written notes.</span>
+                    <span class="t-ko" lang="ko">글과는 따로, 날짜순으로 정렬되는 사진 갤러리를 함께 제공합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Autosave and manual PDF export for selected date ranges.</span>
+                    <span class="t-ko" lang="ko">자동 저장을 지원하고, 원하는 기간을 골라 PDF로 내보낼 수 있습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Optional cloud sync via Supabase + Google sign-in; built with vanilla
+                        JavaScript, HTML, and CSS.</span>
+                    <span class="t-ko" lang="ko">Supabase와 구글 로그인으로 클라우드 동기화를 선택할 수 있으며, 바닐라 JavaScript와 HTML, CSS로
+                        만들었습니다.</span>
                 </li>
             </ul>
             <div class="project-media">
@@ -675,113 +929,215 @@
                     <source srcset="canopydiary.webp" type="image/webp">
                     <img src="canopydiary.jpg"
                         alt="CanopyDiary app — diary entry view with a date picker and day pictures panel"
-                        loading="lazy" width="960" height="615">
+                        data-ko-alt="CanopyDiary 앱 — 날짜 선택기와 그날의 사진 패널이 있는 일기 작성 화면" loading="lazy" width="960"
+                        height="615">
                 </picture>
             </div>
             <div class="project-links">
-                <a href="https://hanifedma.com/canopydiary/" target="_blank">Open app &rarr;</a>
-                <a href="https://github.com/hanifedma/canopydiary" target="_blank">Source &rarr;</a>
+                <a href="https://hanifedma.com/canopydiary/" target="_blank">
+                    <span class="t-en" lang="en">Open app &rarr;</span>
+                    <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/canopydiary" target="_blank">
+                    <span class="t-en" lang="en">Source &rarr;</span>
+                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                </a>
             </div>
         </article>
 
         <article class="project">
             <h2>Ponder</h2>
             <div class="tags">
-                <span class="tag">Web app</span>
-                <span class="tag">Vanilla JS</span>
+                <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
+                        lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
+                        lang="ko">바닐라 JS</span></span>
                 <span class="tag">Firebase</span>
-                <span class="tag">Offline-first</span>
+                <span class="tag"><span class="t-en" lang="en">Offline-first</span><span class="t-ko"
+                        lang="ko">오프라인 우선</span></span>
             </div>
             <ul>
-                <li>A fast, private place to keep favourite quotes alongside your own thoughts.</li>
-                <li>Opens with no login and works offline; entries are saved on the device.</li>
-                <li>Optional Google sign-in syncs across devices, with each person seeing only their own entries.</li>
-                <li>Every entry carries a date, an optional source, and a tag; the whole collection exports to PDF as a
-                    backup.</li>
-                <li>No framework and no web fonts — Firebase is downloaded only if sync is configured.</li>
+                <li>
+                    <span class="t-en" lang="en">A fast, private place to keep favourite quotes alongside your own
+                        thoughts.</span>
+                    <span class="t-ko" lang="ko">좋아하는 인용구와 자신의 생각을 함께 담아 두는, 빠르고 사적인 공간입니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Opens with no login and works offline; entries are saved on the
+                        device.</span>
+                    <span class="t-ko" lang="ko">로그인 없이 바로 열리고 오프라인에서도 동작하며, 기록은 기기에 저장됩니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Optional Google sign-in syncs across devices, with each person seeing
+                        only their own entries.</span>
+                    <span class="t-ko" lang="ko">구글 로그인을 선택하면 기기 사이에 동기화되며, 각자 자신의 기록만 볼 수 있습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Every entry carries a date, an optional source, and a tag; the whole
+                        collection exports to PDF as a backup.</span>
+                    <span class="t-ko" lang="ko">모든 기록에는 날짜와 선택적인 출처, 그리고 태그가 붙고, 전체를 PDF로 내보내 백업할 수 있습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">No framework and no web fonts — Firebase is downloaded only if sync is
+                        configured.</span>
+                    <span class="t-ko" lang="ko">프레임워크도 웹 폰트도 쓰지 않으며, Firebase는 동기화를 설정한 경우에만 내려받습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
                     <source srcset="ponder.webp" type="image/webp">
                     <img src="ponder.jpg"
                         alt="Ponder app — a composer for a quote with an optional source and tag, above search, shuffle and PDF export controls"
-                        loading="lazy" width="960" height="525">
+                        data-ko-alt="Ponder 앱 — 출처와 태그를 함께 적는 인용구 입력창, 그 아래로 검색과 셔플, PDF 내보내기 버튼" loading="lazy"
+                        width="960" height="525">
                 </picture>
             </div>
             <div class="project-links">
-                <a href="https://hanifedma.com/ponder/" target="_blank">Open app &rarr;</a>
-                <a href="https://github.com/hanifedma/ponder" target="_blank">Source &rarr;</a>
+                <a href="https://hanifedma.com/ponder/" target="_blank">
+                    <span class="t-en" lang="en">Open app &rarr;</span>
+                    <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/ponder" target="_blank">
+                    <span class="t-en" lang="en">Source &rarr;</span>
+                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                </a>
             </div>
         </article>
 
         <article class="project">
             <h2>Waterline</h2>
             <div class="tags">
-                <span class="tag">Web app</span>
-                <span class="tag">Vanilla JS</span>
+                <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
+                        lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
+                        lang="ko">바닐라 JS</span></span>
                 <span class="tag">Firebase</span>
                 <span class="tag">PWA</span>
             </div>
             <ul>
-                <li>A water-fasting tracker: pick a goal, and a bowl fills with water hour by hour.</li>
-                <li>Names each stage as it passes — insulin falling, glycogen emptying, ketosis, autophagy.</li>
-                <li>Fasts sync between devices in real time, and a streak calendar chains consecutive days together.
+                <li>
+                    <span class="t-en" lang="en">A water-fasting tracker: pick a goal, and a bowl fills with water hour
+                        by hour.</span>
+                    <span class="t-ko" lang="ko">물 단식 기록 앱입니다. 목표를 정하면 시간이 지날수록 그릇에 물이 차오릅니다.</span>
                 </li>
-                <li>Runs signed out and offline as an installable PWA; offline changes queue and flush on reconnect.
+                <li>
+                    <span class="t-en" lang="en">Names each stage as it passes — insulin falling, glycogen emptying,
+                        ketosis, autophagy.</span>
+                    <span class="t-ko" lang="ko">인슐린 감소, 글리코겐 고갈, 케토시스, 자가포식처럼 지나가는 단계를 하나씩 알려 줍니다.</span>
                 </li>
-                <li>About 40 KB of HTML, CSS, and JS, needing no fonts, frameworks, or images to render the first
-                    screen.</li>
-                <li>A lite mode drops blur, glow, and ambient motion, and enables itself on a slow connection, few CPU
-                    cores, or little RAM.</li>
+                <li>
+                    <span class="t-en" lang="en">Fasts sync between devices in real time, and a streak calendar chains
+                        consecutive days together.</span>
+                    <span class="t-ko" lang="ko">단식 기록이 기기 사이에서 실시간으로 동기화되고, 연속 달성 달력이 이어진 날들을 묶어 보여 줍니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Runs signed out and offline as an installable PWA; offline changes
+                        queue and flush on reconnect.</span>
+                    <span class="t-ko" lang="ko">로그인하지 않아도, 오프라인에서도 설치형 PWA로 동작하며, 오프라인에서 바뀐 내용은 다시 연결될 때 반영됩니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">About 40 KB of HTML, CSS, and JS, needing no fonts, frameworks, or
+                        images to render the first screen.</span>
+                    <span class="t-ko" lang="ko">HTML과 CSS, JS를 합쳐 약 40 KB이며, 첫 화면을 그리는 데 폰트도 프레임워크도 이미지도 필요하지
+                        않습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">A lite mode drops blur, glow, and ambient motion, and enables itself on
+                        a slow connection, few CPU cores, or little RAM.</span>
+                    <span class="t-ko" lang="ko">라이트 모드는 블러와 광원 효과, 배경 움직임을 끄며, 느린 연결이나 적은 CPU 코어·메모리에서는 스스로 켜집니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
                     <source srcset="waterline.webp" type="image/webp">
                     <img src="waterline.jpg"
                         alt="Waterline app — a ring-shaped timer over an empty bowl, with goal lengths from 13h to 72h and a Begin fast button"
-                        loading="lazy" width="960" height="615">
+                        data-ko-alt="Waterline 앱 — 빈 그릇 위에 놓인 고리 모양 타이머, 13시간부터 72시간까지의 목표 선택지와 단식 시작 버튼" loading="lazy"
+                        width="960" height="615">
                 </picture>
             </div>
             <div class="project-links">
-                <a href="https://hanifedma.com/waterline/" target="_blank">Open app &rarr;</a>
-                <a href="https://github.com/hanifedma/waterline" target="_blank">Source &rarr;</a>
+                <a href="https://hanifedma.com/waterline/" target="_blank">
+                    <span class="t-en" lang="en">Open app &rarr;</span>
+                    <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/waterline" target="_blank">
+                    <span class="t-en" lang="en">Source &rarr;</span>
+                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                </a>
             </div>
         </article>
 
         <article class="project">
             <h2>TimberTimer</h2>
             <div class="tags">
-                <span class="tag">Web app</span>
-                <span class="tag">Vanilla JS</span>
+                <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
+                        lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
+                        lang="ko">바닐라 JS</span></span>
                 <span class="tag">Supabase</span>
                 <span class="tag">PWA</span>
             </div>
             <ul>
-                <li>A minimalist jungle focus timer, with a separate rest stopwatch that keeps no records.</li>
-                <li>A plant grows through each session, and every finished session adds one tree to a weekly forest.
+                <li>
+                    <span class="t-en" lang="en">A minimalist jungle focus timer, with a separate rest stopwatch that
+                        keeps no records.</span>
+                    <span class="t-ko" lang="ko">정글 테마의 미니멀한 집중 타이머로, 기록을 남기지 않는 휴식용 스톱워치가 따로 있습니다.</span>
                 </li>
-                <li>Focus history is editable and deletable, with stats for today and all time.</li>
-                <li>Works out of the box on local browser storage, with no setup and no account.</li>
-                <li>Optional Supabase and Google sign-in sync records — and the running timer — across devices, with
-                    row-level security keeping each user to their own.</li>
+                <li>
+                    <span class="t-en" lang="en">A plant grows through each session, and every finished session adds one
+                        tree to a weekly forest.</span>
+                    <span class="t-ko" lang="ko">한 세션 동안 식물이 자라고, 세션을 마칠 때마다 주간 숲에 나무가 한 그루씩 늘어납니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Focus history is editable and deletable, with stats for today and all
+                        time.</span>
+                    <span class="t-ko" lang="ko">집중 기록은 수정하거나 삭제할 수 있고, 오늘과 누적 통계를 함께 보여 줍니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Works out of the box on local browser storage, with no setup and no
+                        account.</span>
+                    <span class="t-ko" lang="ko">설정이나 계정 없이, 브라우저의 로컬 저장소만으로 바로 동작합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Optional Supabase and Google sign-in sync records — and the running
+                        timer — across devices, with row-level security keeping each user to their own.</span>
+                    <span class="t-ko" lang="ko">Supabase와 구글 로그인을 선택하면 기록은 물론 진행 중인 타이머까지 기기 사이에 동기화되고, 행 수준 보안으로 각자
+                        자신의 데이터만 다룰 수 있습니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
                     <source srcset="timbertimer.webp" type="image/webp">
                     <img src="timbertimer.jpg"
                         alt="TimberTimer app — a countdown with session name, duration and tree species beside a to-do list and a weekly forest of completed sessions"
+                        data-ko-alt="TimberTimer 앱 — 세션 이름과 시간, 나무 종류를 고르는 카운트다운 옆에 할 일 목록과 완료한 세션이 모인 주간 숲"
                         loading="lazy" width="960" height="615">
                 </picture>
             </div>
             <div class="project-links">
-                <a href="https://hanifedma.com/timbertimer/" target="_blank">Open app &rarr;</a>
-                <a href="https://github.com/hanifedma/timbertimer" target="_blank">Source &rarr;</a>
+                <a href="https://hanifedma.com/timbertimer/" target="_blank">
+                    <span class="t-en" lang="en">Open app &rarr;</span>
+                    <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/timbertimer" target="_blank">
+                    <span class="t-en" lang="en">Source &rarr;</span>
+                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                </a>
             </div>
         </article>
 
         <footer class="present-footer">
-            <p class="present-link"><a href="/portfolio_presentation/">View as a slide presentation &rarr;</a></p>
-            <p class="present-note">This slide presentation is prepared for interview purposes.</p>
+            <p class="present-link">
+                <a href="/portfolio_presentation/">
+                    <span class="t-en" lang="en">View as a slide presentation &rarr;</span>
+                    <span class="t-ko" lang="ko">슬라이드 자료로 보기 &rarr;</span>
+                </a>
+            </p>
+            <p class="present-note">
+                <span class="t-en" lang="en">This slide presentation is prepared for interview purposes.</span>
+                <span class="t-ko" lang="ko">이 슬라이드 자료는 면접용으로 준비했습니다.</span>
+            </p>
         </footer>
     </main>
 
@@ -792,6 +1148,38 @@
 
         // The theme is set pre-paint in <head>; just reflect it on the toggle (checked = dark).
         toggleSwitch.checked = root.getAttribute('data-theme') !== 'light';
+
+        // The language is also chosen pre-paint, and CSS already shows the right half of
+        // the markup. What is left is the switch itself, and the strings that live in
+        // attributes, where two languages cannot sit side by side.
+        const langButtons = document.querySelectorAll('[data-set-lang]');
+
+        function applyLang(lang) {
+            root.setAttribute('data-lang', lang);
+            root.setAttribute('lang', lang);
+            document.title = window.i18nMeta[lang].title;
+            const desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
+
+            langButtons.forEach((b) => {
+                b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
+            });
+            document.querySelectorAll('[data-ko-alt]').forEach((el) => {
+                if (el.dataset.enAlt === undefined) el.dataset.enAlt = el.getAttribute('alt') || '';
+                el.setAttribute('alt', lang === 'ko' ? el.dataset.koAlt : el.dataset.enAlt);
+            });
+        }
+
+        applyLang(root.getAttribute('data-lang') === 'ko' ? 'ko' : 'en');
+
+        langButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                applyLang(btn.dataset.setLang);
+                try {
+                    localStorage.setItem('lang', btn.dataset.setLang);
+                } catch (e) { /* storage may be unavailable; the choice still holds for this visit */ }
+            });
+        });
 
         toggleSwitch.addEventListener('change', () => {
             const isDark = toggleSwitch.checked;

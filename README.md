@@ -48,6 +48,26 @@ The site is built to open quickly on a slow connection and to run on a machine w
 - **The theme is applied before the first paint**, so there is no flash of the wrong colours,
   and transitions stay switched off until the first frame has painted.
 
+## English and Korean
+
+The home and portfolio pages are bilingual. **English is the default**, and nothing but an
+explicit choice moves off it: a `?lang=ko` query string first, so a link can be shared already
+translated, then whatever the visitor last picked, remembered in `localStorage` and shared
+between the two pages. The browser's own language is deliberately not consulted.
+
+Both languages ship inside the markup — `<span class="t-en">` beside `<span class="t-ko">` — and
+CSS reveals one of them. That means switching fetches nothing, cannot flash the wrong text, and
+leaves the links and bold runs inside a translated sentence intact, which swapping `textContent`
+would destroy. The cost is the untranslated half of the page travelling with every visit: about
+2 KB gzipped on the home page and 5 KB on the portfolio. Fetching a dictionary instead would save
+those bytes for English readers, at the price of a second request and a flash of English for
+Korean ones.
+
+The chosen language is applied before the first paint, alongside the theme. `<html lang>` follows
+it so screen readers switch voice, and the strings that can only live in an attribute — tooltips
+and image `alt` text — are swapped by the same handler. Korean sets `word-break: keep-all`, so
+lines break between words rather than mid-word. With JavaScript off the page stays in English.
+
 ## How visitors get the newest version
 
 GitHub Pages serves HTML with `Cache-Control: max-age=600`, so a browser may paint a page from

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- "preload" disables transitions until the first paint so the theme/toggle
      don't animate on load. It is removed by script once rendering settles. -->
-<html lang="en" class="preload">
+<html lang="en" class="preload" data-lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -10,14 +10,44 @@
         content="Hanif Edma — research assistant in Seoul focusing on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
     <meta name="theme-color" content="#0f0f0f">
     <title>Hanif Edma</title>
-    <!-- Apply the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <!-- Apply the saved theme and language before first paint, so neither the colours
+         nor the text flash the wrong version on load. -->
     <script>
+        window.i18nMeta = {
+            en: {
+                title: 'Hanif Edma',
+                description: 'Hanif Edma — research assistant in Seoul focusing on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.'
+            },
+            ko: {
+                title: 'Hanif Edma',
+                description: 'Hanif Edma — 서울에서 로봇의 강건 제어를 연구하는 연구원. 전기공학, 제어공학, 로보틱스가 교차하는 분야를 연구합니다.'
+            }
+        };
         try {
             if (localStorage.getItem('theme') === 'light') {
                 document.documentElement.setAttribute('data-theme', 'light');
                 document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff');
             }
         } catch (e) { /* localStorage may be unavailable; default theme is fine */ }
+
+        // English is the default. Only an explicit choice moves off it: ?lang= first, so a
+        // link can be shared in one language, then whatever the visitor last picked. The
+        // markup carries both languages; this only decides which one CSS reveals.
+        (function () {
+            var lang = 'en';
+            try {
+                var asked = new URLSearchParams(location.search).get('lang');
+                var saved = localStorage.getItem('lang');
+                if (asked === 'ko' || asked === 'en') lang = asked;
+                else if (saved === 'ko' || saved === 'en') lang = saved;
+            } catch (e) { /* no URLSearchParams/localStorage — English it is */ }
+            var root = document.documentElement;
+            root.setAttribute('data-lang', lang);
+            root.setAttribute('lang', lang);
+            document.title = window.i18nMeta[lang].title;
+            var desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
+        })();
     </script>
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
@@ -48,6 +78,24 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        /* --- Language --------------------------------------------------------
+           Both languages ship in the markup and CSS reveals one, so switching
+           costs no request and cannot flash the wrong text. With JS off the
+           page stays in English, which is the default anyway. */
+        html[data-lang="en"] .t-ko,
+        html[data-lang="ko"] .t-en {
+            display: none;
+        }
+
+        /* Korean breaks lines between words rather than mid-word, and reads more
+           comfortably with a slightly looser line. A long Latin token (a URL) may
+           still break, otherwise it would overflow its column. */
+        html[data-lang="ko"] body {
+            line-height: 1.75;
+            word-break: keep-all;
+            overflow-wrap: break-word;
         }
 
         body,
@@ -91,6 +139,50 @@
             gap: 1.5rem;
             margin-bottom: 3rem;
             /* Adds space before the intro starts */
+        }
+
+        /* Language switch and theme toggle share the right-hand end of the top bar. */
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: var(--card-bg);
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1;
+            padding: 0.5rem 0.8rem;
+            border: 0;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+
+        .lang-btn:hover {
+            color: var(--accent);
+        }
+
+        .lang-btn[aria-pressed="true"] {
+            background: var(--accent);
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .lang-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: -4px;
         }
 
         .theme-switch-wrapper {
@@ -458,74 +550,130 @@
     <main class="container">
         <div class="top-bar">
             <nav class="links-container">
-                <a href="mailto:hanifedmafauz@gmail.com" class="link-item" title="Gmail">
-                    <span class="sr-only">Mail</span>
+                <a href="mailto:hanifedmafauz@gmail.com" class="link-item" title="Gmail" data-ko-title="지메일">
+                    <span class="sr-only"><span class="t-en" lang="en">Mail</span><span class="t-ko"
+                            lang="ko">메일</span></span>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                     </svg>
                 </a>
-                <a href="https://www.linkedin.com/in/hanif-edma/" class="link-item" target="_blank" title="LinkedIn">
-                    <span class="sr-only">LinkedIn</span>
+                <a href="https://www.linkedin.com/in/hanif-edma/" class="link-item" target="_blank" title="LinkedIn"
+                    data-ko-title="링크드인">
+                    <span class="sr-only"><span class="t-en" lang="en">LinkedIn</span><span class="t-ko"
+                            lang="ko">링크드인</span></span>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
                     </svg>
                 </a>
-                <a href="Resume_Hanif_Edma_Fauz.pdf" class="link-item" target="_blank" title="Resume">Resume</a>
-                <a href="/portfolio/" class="link-item" title="Portfolio">Portfolio</a>
+                <a href="Resume_Hanif_Edma_Fauz.pdf" class="link-item" target="_blank" title="Resume"
+                    data-ko-title="이력서">
+                    <span class="t-en" lang="en">Resume</span><span class="t-ko" lang="ko">이력서</span>
+                </a>
+                <a href="/portfolio/" class="link-item" title="Portfolio" data-ko-title="포트폴리오">
+                    <span class="t-en" lang="en">Portfolio</span><span class="t-ko" lang="ko">포트폴리오</span>
+                </a>
             </nav>
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch" for="checkbox">
-                    <input type="checkbox" id="checkbox" />
-                    <div class="slider">
-                        <span class="mode-text text-light">Light</span>
-                        <span class="mode-text text-dark">Dark</span>
+            <div class="top-actions">
+                <div class="lang-switch" role="group" aria-label="Language / 언어">
+                    <button type="button" class="lang-btn" data-set-lang="en" aria-pressed="true">EN</button>
+                    <button type="button" class="lang-btn" data-set-lang="ko" lang="ko"
+                        aria-pressed="false">한국어</button>
+                </div>
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="checkbox">
+                        <input type="checkbox" id="checkbox" />
+                        <div class="slider">
+                            <span class="mode-text text-light"><span class="t-en" lang="en">Light</span><span
+                                    class="t-ko" lang="ko">라이트</span></span>
+                            <span class="mode-text text-dark"><span class="t-en" lang="en">Dark</span><span class="t-ko"
+                                    lang="ko">다크</span></span>
 
-                        <div class="clouds">
-                            <div class="cloud"></div>
-                            <div class="cloud"></div>
-                            <div class="cloud"></div>
+                            <div class="clouds">
+                                <div class="cloud"></div>
+                                <div class="cloud"></div>
+                                <div class="cloud"></div>
+                            </div>
+                            <div class="stars">
+                                <div class="star"></div>
+                                <div class="star"></div>
+                                <div class="star"></div>
+                            </div>
                         </div>
-                        <div class="stars">
-                            <div class="star"></div>
-                            <div class="star"></div>
-                            <div class="star"></div>
-                        </div>
-                    </div>
-                </label>
+                    </label>
+                </div>
             </div>
         </div>
         <div class="intro-section">
             <header>
-                <h1>Hi, I'm Hanif Edma</h1>
+                <h1><span class="t-en" lang="en">Hi, I'm Hanif Edma</span><span class="t-ko"
+                        lang="ko">안녕하세요, Hanif Edma입니다</span></h1>
                 <p>
-                    Currently a research assistant based in Seoul, South Korea 🇰🇷.
-                    Focuses on the intersection of electrical engineering,
-                    control engineering, and robotics.
+                    <span class="t-en" lang="en">
+                        Currently a research assistant based in Seoul, South Korea 🇰🇷.
+                        Focuses on the intersection of electrical engineering,
+                        control engineering, and robotics.
+                    </span>
+                    <span class="t-ko" lang="ko">
+                        현재 대한민국 서울에서 연구원으로 일하고 있습니다 🇰🇷.
+                        전기공학, 제어공학, 로보틱스가 만나는 지점을 연구합니다.
+                    </span>
                 </p>
                 <p>
-                    My current research focuses on control engineering and its implementation to robotics. I'm
-                    passionate about exploring math and technology.
+                    <span class="t-en" lang="en">
+                        My current research focuses on control engineering and its implementation to robotics. I'm
+                        passionate about exploring math and technology.
+                    </span>
+                    <span class="t-ko" lang="ko">
+                        지금은 제어공학과 이를 로보틱스에 구현하는 일에 집중하고 있습니다. 수학과 기술을 파고드는 것을 좋아합니다.
+                    </span>
                 </p>
                 <p>
-                    Recent work can be seen at
-                    <strong><a href="https://sgp-mppi.github.io/" target="_blank">sgp-mppi.github.io</a></strong> and
-                    <strong><a href="https://gp-ramppi.github.io/" target="_blank">gp-ramppi.github.io</a></strong>.
+                    <span class="t-en" lang="en">
+                        Recent work can be seen at
+                        <strong><a href="https://sgp-mppi.github.io/" target="_blank">sgp-mppi.github.io</a></strong>
+                        and
+                        <strong><a href="https://gp-ramppi.github.io/" target="_blank">gp-ramppi.github.io</a></strong>.
+                    </span>
+                    <span class="t-ko" lang="ko">
+                        최근 연구는
+                        <strong><a href="https://sgp-mppi.github.io/" target="_blank">sgp-mppi.github.io</a></strong>와
+                        <strong><a href="https://gp-ramppi.github.io/" target="_blank">gp-ramppi.github.io</a></strong>에서
+                        보실 수 있습니다.
+                    </span>
                 </p>
                 <p>
-                    On the side, I build and run small web apps that I use myself and that anyone is welcome
-                    to use—<strong><a href="https://hanifedma.com/canopydiary/" target="_blank">CanopyDiary</a></strong>
-                    (a diary), <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>
-                    (quotes &amp; thoughts),
-                    <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>
-                    (a fasting tracker), and
-                    <strong><a href="https://hanifedma.com/timbertimer/" target="_blank">TimberTimer</a></strong>
-                    (a focus timer).
+                    <span class="t-en" lang="en">
+                        On the side, I build and run small web apps that I use myself and that anyone is welcome
+                        to use—<strong><a href="https://hanifedma.com/canopydiary/"
+                                target="_blank">CanopyDiary</a></strong>
+                        (a diary), <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>
+                        (quotes &amp; thoughts),
+                        <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>
+                        (a fasting tracker), and
+                        <strong><a href="https://hanifedma.com/timbertimer/" target="_blank">TimberTimer</a></strong>
+                        (a focus timer).
+                    </span>
+                    <span class="t-ko" lang="ko">
+                        틈틈이 직접 쓰려고 만든 작은 웹 앱들을 운영하고 있으며, 누구나 자유롭게 쓰실 수 있습니다 —
+                        <strong><a href="https://hanifedma.com/canopydiary/" target="_blank">CanopyDiary</a></strong>(일기),
+                        <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>(인용구와 생각),
+                        <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>(단식 기록),
+                        <strong><a href="https://hanifedma.com/timbertimer/"
+                                target="_blank">TimberTimer</a></strong>(집중 타이머).
+                    </span>
                 </p>
                 <p>
-                    Outside of work, I enjoy running 🏃, watching movies, and deep-diving into math videos—especially
-                    3Blue1Brown. Also spend my time doing juggling 🤹‍♂️ and learning about tech.
+                    <span class="t-en" lang="en">
+                        Outside of work, I enjoy running 🏃, watching movies, and deep-diving into
+                        math videos—especially
+                        3Blue1Brown. Also spend my time doing juggling 🤹‍♂️ and learning about tech.
+                    </span>
+                    <span class="t-ko" lang="ko">
+                        일 외에는 달리기 🏃와 영화 감상을 즐기고, 수학 영상, 특히 3Blue1Brown에 깊이 빠져듭니다.
+                        저글링 🤹‍♂️과 새로운 기술을 배우는 데에도 시간을 씁니다.
+                    </span>
                 </p>
             </header>
 
@@ -544,9 +692,17 @@
                 </div>
                 <div class="caption">
                     <strong><a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">
-                            Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust Mobile Robot Control
+                            <span class="t-en" lang="en">
+                                Performance Enhanced Risk-Aware MPPI Using Gaussian Process for Robust Mobile Robot
+                                Control
+                            </span>
+                            <span class="t-ko" lang="ko">
+                                강건한 이동 로봇 제어를 위한 가우시안 프로세스 기반 성능 향상 위험 인지 MPPI
+                            </span>
                         </a></strong>
-                    <br> Hanif Edma et al., IEEE Access, 2025
+                    <br>
+                    <span class="t-en" lang="en">Hanif Edma et al., IEEE Access, 2025</span>
+                    <span class="t-ko" lang="ko">Hanif Edma 외, IEEE Access, 2025</span>
                 </div>
             </section>
         </div>
@@ -559,6 +715,38 @@
 
         // The theme is set pre-paint in <head>; just reflect it on the toggle (checked = dark).
         toggleSwitch.checked = root.getAttribute('data-theme') !== 'light';
+
+        // The language is also chosen pre-paint, and CSS already shows the right half of
+        // the markup. What is left is the switch itself, and the strings that live in
+        // attributes, where two languages cannot sit side by side.
+        const langButtons = document.querySelectorAll('[data-set-lang]');
+
+        function applyLang(lang) {
+            root.setAttribute('data-lang', lang);
+            root.setAttribute('lang', lang);
+            document.title = window.i18nMeta[lang].title;
+            const desc = document.querySelector('meta[name="description"]');
+            if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
+
+            langButtons.forEach((b) => {
+                b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
+            });
+            document.querySelectorAll('[data-ko-title]').forEach((el) => {
+                if (el.dataset.enTitle === undefined) el.dataset.enTitle = el.getAttribute('title') || '';
+                el.setAttribute('title', lang === 'ko' ? el.dataset.koTitle : el.dataset.enTitle);
+            });
+        }
+
+        applyLang(root.getAttribute('data-lang') === 'ko' ? 'ko' : 'en');
+
+        langButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                applyLang(btn.dataset.setLang);
+                try {
+                    localStorage.setItem('lang', btn.dataset.setLang);
+                } catch (e) { /* storage may be unavailable; the choice still holds for this visit */ }
+            });
+        });
 
         toggleSwitch.addEventListener('change', () => {
             const isDark = toggleSwitch.checked;
