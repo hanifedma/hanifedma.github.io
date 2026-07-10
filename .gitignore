@@ -11,26 +11,11 @@ portfolio/awarding.jpeg
 # academic PDF (with a student ID) that must NOT be published to the public site.
 portfolio/robot_6dof_opengl/
 
-# LaTeX portfolio: track only the source and the final PDF;
-# ignore all the latexmk build artifacts (.aux, .log, .fls, .fdb_latexmk,
-# .nav, .out, .snm, .toc) and the duplicate portfolio.pdf.
-portfolio-pdf/*
-!portfolio-pdf/portfolio.tex
-!portfolio-pdf/Portfolio_Hanif_Edma_Fauz.pdf
-resume/resume.aux
-resume/resume.fdb_latexmk
-resume/resume.fls
-resume/resume.log
-resume/resume.out
-resume/resume.pdf
-resume/resume.synctex.gz
-resume/resume_movensys.aux
-resume/resume_movensys.fdb_latexmk
-resume/resume_movensys.fls
-resume/resume_movensys.log
-resume/resume_movensys.out
-resume/resume_movensys.pdf
-resume/resume_movensys.synctex.gz
+# LaTeX portfolio and resume sources — kept local only, nothing on the site
+# links into these folders (the published resume is the root-level
+# Resume_Hanif_Edma_Fauz.pdf).
+portfolio-pdf/
+resume/
 portfolio_presentation/portfolio_presentation.aux
 portfolio_presentation/portfolio_presentation.fdb_latexmk
 portfolio_presentation/portfolio_presentation.fls
@@ -44,3 +29,7 @@ portfolio_presentation/portfolio_presentation.toc
 # The web page uses the compressed propose_rw_demo.mp4 + poster; the deck uses
 # propose_rw_1stpaper.png (both committed).
 portfolio_presentation/propose_rw_first_paper.mp4
+portfolio_presentation/corr_detect_app/image1.png
+portfolio_presentation/corr_detect_app/image2.png
+portfolio_presentation/corr_detect_app/image3.png
+portfolio_presentation/corr_detect_app/image4.jpeg
