@@ -531,12 +531,14 @@
 
             <section class="visual-stack">
                 <div class="media-container">
-                    <video autoplay muted loop playsinline width="854" height="480">
+                    <video muted loop playsinline preload="none" width="854" height="480"
+                        poster="proposed_diff_poster.jpg">
                         <source src="proposed diff.webm" type="video/webm">
                     </video>
                 </div>
                 <div class="media-container">
-                    <video autoplay muted loop playsinline width="426" height="240">
+                    <video muted loop playsinline preload="none" width="426" height="240"
+                        poster="real_world_poster.jpg">
                         <source src="real_world_vid.webm" type="video/webm">
                     </video>
                 </div>
@@ -583,7 +585,9 @@
         }
         stampResume();
 
-        // Pause videos while off-screen to save CPU on low-end devices.
+        // The clips carry preload="none" and a poster, so the ~1.4 MB of video is only
+        // fetched once one scrolls into view — the text renders first on a slow link.
+        // Leaving the viewport pauses them again, to save CPU on devices without a GPU.
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
