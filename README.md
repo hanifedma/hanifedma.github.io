@@ -13,6 +13,9 @@ onto `hanifedma.com` by the [`CNAME`](CNAME) file.
 | `index.html` | Home page — intro, links, and two looping clips from the published work |
 | `portfolio/index.html` | Portfolio — research, engineering projects, and web apps |
 | `portfolio_presentation/index.html` | The same material as a slide deck, plus the deck as a PDF |
+| `404.html` | Not-found page — GitHub Pages serves it for any unknown path |
+| `og-image.png` | 1200×630 preview image shown when a link is shared |
+| `robots.txt`, `sitemap.xml` | Crawler directives and the list of pages |
 | `favicon/` | Icons and the web manifest |
 | `Resume_Hanif_Edma_Fauz.pdf` | The resume linked from the home page |
 | `*.webm`, `*_poster.jpg` | Home page demo clips and their poster frames |
@@ -36,7 +39,9 @@ theme, the lazy-loading clips, and the update check all behave as they do in pro
 
 The site is built to open quickly on a slow connection and to run on a machine with no GPU.
 
-- **No web fonts.** The type is a monospace system stack, so nothing is downloaded to render text.
+- **No web fonts.** The type is the system-ui sans-serif stack, so nothing is downloaded to render text.
+- **Reduced motion is respected.** A visitor whose system asks for reduced motion gets the still
+  poster instead of the auto-playing clips, which also spares them the video download.
 - **No render-blocking requests.** CSS and JS are inline, so a page is one request.
 - **Video is deferred.** Clips carry `preload="none"` and a poster frame; an `IntersectionObserver`
   starts them only once they scroll into view and pauses them when they leave. The home page's
@@ -82,6 +87,23 @@ tab stayed open. The check runs only on `visibilitychange`, so an idle tab costs
 
 Media whose contents change while keeping their filename are cache-busted with a `?v=N` query
 string, and the resume link is stamped with a timestamp so it always opens the current PDF.
+
+## Sharing and search engines
+
+Each page carries the metadata a link needs to travel well:
+
+- **Open Graph and Twitter cards**, so a link pasted into LinkedIn, Slack, or a message unfurls
+  with a title, a description, and `og-image.png` rather than a bare URL. Social scrapers do not
+  run JavaScript, so the cards describe the English default while the on-page text still switches.
+- **A canonical URL** on every page. The site answers at both `hanifedma.com` and the underlying
+  `hanifedma.github.io`, and the canonical names the `.com` as the one to index.
+- **JSON-LD structured data** — a `Person` on the home page (name, role, location, and links to
+  LinkedIn, GitHub, and the paper) and a breadcrumb on the portfolio.
+- **`robots.txt` and `sitemap.xml`** listing the three pages, with `hreflang` alternates pointing
+  at the `?lang=en` / `?lang=ko` variants.
+
+`og-image.png` is a baked 1200×630 PNG. It is regenerated from an HTML template rather than edited
+by hand; the template lives outside the repo.
 
 ## Deploying
 
