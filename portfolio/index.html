@@ -1242,13 +1242,15 @@
 
         // Looping demo clips (marked data-autoplay) start — and only then lazy-load —
         // once scrolled into view, and pause when they leave, to keep load and CPU low.
-        // The corrosion video has no data-autoplay, so it stays click-to-play.
+        // The corrosion video has no data-autoplay, so it stays click-to-play. A visitor
+        // who asked for reduced motion gets no autoplay; every clip waits on a click.
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     const video = entry.target;
                     if (entry.isIntersecting) {
-                        if (video.dataset.autoplay !== undefined) video.play().catch(() => { });
+                        if (video.dataset.autoplay !== undefined && !reduceMotion) video.play().catch(() => { });
                     } else {
                         video.pause();
                     }

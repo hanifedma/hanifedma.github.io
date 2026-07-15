@@ -833,7 +833,9 @@
         // The clips carry preload="none" and a poster, so the ~1.4 MB of video is only
         // fetched once one scrolls into view — the text renders first on a slow link.
         // Leaving the viewport pauses them again, to save CPU on devices without a GPU.
-        if ('IntersectionObserver' in window) {
+        // A visitor who asked for reduced motion keeps the still poster (and the bytes).
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if ('IntersectionObserver' in window && !reduceMotion) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {

@@ -806,12 +806,14 @@
 
         // Looping demo clips (marked data-autoplay) start — and only then lazy-load —
         // once scrolled into view, and pause when they leave, to keep load and CPU low.
+        // A visitor who asked for reduced motion gets no autoplay.
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     const video = entry.target;
                     if (entry.isIntersecting) {
-                        if (video.dataset.autoplay !== undefined) video.play().catch(() => { });
+                        if (video.dataset.autoplay !== undefined && !reduceMotion) video.play().catch(() => { });
                     } else {
                         video.pause();
                     }
