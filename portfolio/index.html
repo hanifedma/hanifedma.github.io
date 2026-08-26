@@ -25,7 +25,7 @@
     <meta property="og:image" content="https://hanifedma.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Hanif Edma — Research Assistant, robust robot control. Seoul, South Korea.">
+    <meta property="og:image:alt" content="Hanif Edma — robust robot control, at the intersection of control engineering and robotics.">
     <meta property="og:locale" content="en_US">
     <meta property="og:locale:alternate" content="ko_KR">
     <meta name="twitter:card" content="summary_large_image">
@@ -155,7 +155,9 @@
         .tag,
         .project,
         .project-media img,
-        .project-media video {
+        .project-media video,
+        .panel img,
+        .panel video {
             transition: background-color 2s, color 2s, border-color 2s, fill 2s;
         }
 
@@ -209,41 +211,33 @@
             gap: 1rem;
         }
 
-        .lang-switch {
-            display: inline-flex;
-            align-items: center;
+        /* One button showing the language you are reading: EN in English, 한 in
+           Korean. Its label is the same bilingual markup as the rest of the page,
+           so it flips with everything else and needs no script of its own. The
+           fixed width keeps the top bar from shifting as the label changes. */
+        .lang-toggle {
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1;
+            min-width: 2.6rem;
+            padding: 0.5rem 0.6rem;
             border: 1px solid var(--border);
             border-radius: 999px;
             background: var(--card-bg);
-            overflow: hidden;
-        }
-
-        .lang-btn {
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 500;
-            line-height: 1;
-            padding: 0.5rem 0.8rem;
-            border: 0;
-            background: transparent;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: background-color 0.15s, color 0.15s;
+            transition: background-color 0.18s, color 0.18s, border-color 0.18s;
         }
 
-        .lang-btn:hover {
-            color: var(--accent);
+        .lang-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
-        .lang-btn[aria-pressed="true"] {
-            background: var(--accent);
-            color: #ffffff;
-            cursor: default;
-        }
-
-        .lang-btn:focus-visible {
+        .lang-toggle:focus-visible {
             outline: 2px solid var(--accent);
-            outline-offset: -4px;
+            outline-offset: 2px;
         }
 
         /* --- Theme toggle (mechanism unchanged from the home page) --- */
@@ -447,34 +441,6 @@
             color: var(--text-secondary);
         }
 
-        .present-footer {
-            margin-top: 3.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .present-link {
-            margin-top: 0;
-            font-size: 1.0625rem;
-        }
-
-        .present-link a {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        .present-link a:hover {
-            transition: color 0s;
-            text-decoration: underline;
-        }
-
-        .present-note {
-            margin-top: 0.5rem;
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-        }
-
         /* --- Sections & projects --- */
         .section-label {
             font-size: 0.78rem;
@@ -565,14 +531,56 @@
             max-width: 480px;
         }
 
+        /* Projects that carry several stills or clips lay them out two-up, on a grid
+           rather than a flex row: a lone panel then keeps one column's width instead
+           of stretching over the whole measure, so every panel comes out the same. */
+        .media-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.25rem;
+        }
+
+        .media-row .panel {
+            margin: 0;
+            min-width: 0;
+        }
+
+        /* Narrower than this, two columns leave less room than the media deserves. */
+        @media (max-width: 700px) {
+            .media-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel figcaption {
+            margin-top: 0.6rem;
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+        }
+
         .project-media img,
-        .project-media video {
+        .project-media video,
+        .panel img,
+        .panel video {
             width: 100%;
-            height: auto;
             display: block;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--card-bg);
+        }
+
+        /* One box for every still and clip on the page, so plots, screenshots and
+           footage line up in a row and down the page whatever shape they are. The
+           media sits inside its box whole — letterboxed against the card colour
+           rather than cropped, since these are figures, not decoration. */
+        .project-media img,
+        .project-media video,
+        .panel img,
+        .panel video {
+            aspect-ratio: 4 / 3;
+            height: auto;
+            object-fit: contain;
         }
 
         a {
@@ -608,11 +616,9 @@
         <div class="top-bar">
             <a href="/" class="home-link">&larr; Hanif Edma</a>
             <div class="top-actions">
-                <div class="lang-switch" role="group" aria-label="Language / 언어">
-                    <button type="button" class="lang-btn" data-set-lang="en" aria-pressed="true">EN</button>
-                    <button type="button" class="lang-btn" data-set-lang="ko" lang="ko"
-                        aria-pressed="false">한국어</button>
-                </div>
+                <button type="button" class="lang-toggle" data-toggle-lang>
+                    <span class="t-en" lang="en">EN</span><span class="t-ko" lang="ko">한</span>
+                </button>
                 <div class="theme-switch-wrapper">
                     <label class="theme-switch" for="checkbox">
                         <input type="checkbox" id="checkbox" />
@@ -684,27 +690,76 @@
                     <span class="t-ko" lang="ko">시뮬레이션과 실제 하드웨어(F1TENTH, Clearpath Jackal)에서 검증했습니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="gpramppi.webp" type="image/webp">
-                    <img src="gpramppi.jpg"
-                        alt="Method framework: offline data collection, Gaussian Process, and online control on the F1TENTH car"
-                        loading="lazy" width="843" height="403">
-                </picture>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="gpramppi.webp" type="image/webp">
+                        <img src="gpramppi.jpg"
+                            alt="Method framework: offline data collection, Gaussian Process, and online control on the F1TENTH car"
+                            loading="lazy" width="843" height="403">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">Method framework</span><span class="t-ko"
+                            lang="ko">방법 구성도</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="f1tenth_car.webp" type="image/webp">
+                        <img src="f1tenth_car.jpg"
+                            alt="The F1TENTH autonomous car platform, labeled with its Hokuyo LiDAR, Jetson Orin NX, VESC, and IMU sensor"
+                            loading="lazy" width="1000" height="563">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">F1TENTH platform</span><span class="t-ko"
+                            lang="ko">F1TENTH 플랫폼</span></figcaption>
+                </figure>
             </div>
-            <div class="project-media">
-                <picture>
-                    <source srcset="f1tenth_car.webp" type="image/webp">
-                    <img src="f1tenth_car.jpg"
-                        alt="The F1TENTH autonomous car platform, labeled with its Hokuyo LiDAR, Jetson Orin NX, VESC, and IMU sensor"
-                        loading="lazy" width="1000" height="563">
-                </picture>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p1_sim_wo_obs.webp" type="image/webp">
+                        <img src="p1_sim_wo_obs.jpg" alt="Simulation trajectory without obstacles" loading="lazy"
+                            width="900" height="571">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">Simulation — without obstacles</span><span class="t-ko"
+                            lang="ko">시뮬레이션 — 장애물 없음</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p1_sim_w_obs.webp" type="image/webp">
+                        <img src="p1_sim_w_obs.jpg" alt="Simulation trajectory with obstacles" loading="lazy"
+                            width="900" height="565">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">Simulation — with obstacles</span><span class="t-ko"
+                            lang="ko">시뮬레이션 — 장애물 있음</span></figcaption>
+                </figure>
             </div>
-            <div class="project-media">
-                <video muted loop playsinline preload="none" data-autoplay width="854" height="480"
-                    poster="gpramppi_demo_poster.jpg">
-                    <source src="gpramppi_demo.webm" type="video/webm">
-                </video>
+            <div class="media-row">
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="854" height="480"
+                        poster="gpramppi_demo_poster.jpg">
+                        <source src="gpramppi_demo.webm" type="video/webm">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">Simulation run</span><span class="t-ko"
+                            lang="ko">시뮬레이션 주행</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="854" height="485"
+                        poster="propose_rw_poster.jpg">
+                        <source src="propose_rw_demo.mp4" type="video/mp4">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">Real-world run — proposed method</span><span class="t-ko"
+                            lang="ko">실제 환경 주행 — 제안 기법</span></figcaption>
+                </figure>
+            </div>
+            <div class="media-row">
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="426" height="240"
+                        poster="real_world_poster.jpg">
+                        <source src="real_world_vid.webm" type="video/webm">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">Real-world run — two clear laps, then obstacles that are
+                            not on the map appear</span><span class="t-ko" lang="ko">실제 환경 주행 — 두 바퀴는 장애물 없이, 이후 지도에
+                            없는 장애물이 갑자기 등장</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://gp-ramppi.github.io/" target="_blank">
@@ -750,19 +805,44 @@
                     <span class="t-ko" lang="ko">자율주행 차량에서 기존 MPPI보다 나은 경로 추종 성능을 보였습니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="sgpmppi.webp" type="image/webp">
-                    <img src="sgpmppi.jpg"
-                        alt="Control scheme: a Sparse Gaussian Process feeding a risk-aware MPPI controller in the loop"
-                        loading="lazy" width="900" height="624">
-                </picture>
+            <div class="media-row">
+                <figure class="panel">
+                    <picture>
+                        <source srcset="sgpmppi.webp" type="image/webp">
+                        <img src="sgpmppi.jpg"
+                            alt="Control scheme: a Sparse Gaussian Process feeding a risk-aware MPPI controller in the loop"
+                            loading="lazy" width="900" height="624">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">Control scheme</span><span class="t-ko"
+                            lang="ko">제어 구조</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="p2_sampling.webp" type="image/webp">
+                        <img src="p2_sampling.jpg" alt="Online trajectory sampling around the vehicle" loading="lazy"
+                            width="760" height="732">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">Online sampling</span><span class="t-ko"
+                            lang="ko">온라인 샘플링</span></figcaption>
+                </figure>
             </div>
-            <div class="project-media">
-                <video muted loop playsinline preload="none" data-autoplay width="640" height="362"
-                    poster="sgpmppi_demo_poster.jpg">
-                    <source src="sgpmppi_demo.webm" type="video/webm">
-                </video>
+            <div class="media-row">
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="736" height="480"
+                        poster="sgpmppi_sim_poster.jpg">
+                        <source src="sgpmppi_sim_demo.webm" type="video/webm">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">Simulation (Gazebo)</span><span class="t-ko"
+                            lang="ko">시뮬레이션 (Gazebo)</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <video muted loop playsinline preload="none" data-autoplay width="640" height="362"
+                        poster="sgpmppi_demo_poster.jpg">
+                        <source src="sgpmppi_demo.webm" type="video/webm">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">Real-world run — proposed method</span><span class="t-ko"
+                            lang="ko">실제 환경 주행 — 제안 기법</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://sgp-mppi.github.io/" target="_blank">
@@ -922,29 +1002,37 @@
                         IDR(약 1,600달러)를 받았습니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <video controls preload="none" playsinline width="960" height="720" poster="corrosion_poster.jpg">
-                    <source src="corrosion_demo.mp4" type="video/mp4">
-                </video>
-            </div>
-            <div class="project-media">
-                <picture>
-                    <source srcset="awarding.webp" type="image/webp">
-                    <img src="awarding.jpg"
-                        alt="The team receiving the 1st place award (25 million IDR) at SciHackfest 2023"
-                        loading="lazy" width="1000" height="666">
-                </picture>
+            <div class="media-row">
+                <figure class="panel">
+                    <video controls preload="none" playsinline width="960" height="720" poster="corrosion_poster.jpg">
+                        <source src="corrosion_demo.mp4" type="video/mp4">
+                    </video>
+                    <figcaption><span class="t-en" lang="en">App demo</span><span class="t-ko"
+                            lang="ko">앱 시연</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <picture>
+                        <source srcset="awarding.webp" type="image/webp">
+                        <img src="awarding.jpg"
+                            alt="The team receiving the 1st place award (25 million IDR) at SciHackfest 2023"
+                            loading="lazy" width="1000" height="666">
+                    </picture>
+                    <figcaption><span class="t-en" lang="en">1st place at SciHackfest 2023</span><span class="t-ko"
+                            lang="ko">SciHackfest 2023 1위 수상</span></figcaption>
+                </figure>
             </div>
         </article>
 
-        <p class="section-label"><span class="t-en" lang="en">Web Apps</span><span class="t-ko"
-                lang="ko">웹 앱</span></p>
+        <p class="section-label"><span class="t-en" lang="en">Apps</span><span class="t-ko"
+                lang="ko">앱</span></p>
 
         <article class="project">
             <h2>CanopyDiary</h2>
             <div class="tags">
                 <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
                         lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Android</span><span class="t-ko"
+                        lang="ko">안드로이드</span></span>
                 <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
                         lang="ko">바닐라 JS</span></span>
                 <span class="tag">Supabase</span>
@@ -969,6 +1057,12 @@
                     <span class="t-ko" lang="ko">Supabase와 구글 로그인으로 클라우드 동기화를 선택할 수 있으며, 바닐라 JavaScript와 HTML, CSS로
                         만들었습니다.</span>
                 </li>
+                <li>
+                    <span class="t-en" lang="en">A native Android client (Kotlin) syncs both ways with the web app
+                        through the same Supabase project.</span>
+                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin)가 같은 Supabase 프로젝트를 통해 웹 앱과 양방향으로
+                        동기화됩니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -985,8 +1079,12 @@
                     <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
                 </a>
                 <a href="https://github.com/hanifedma/canopydiary" target="_blank">
-                    <span class="t-en" lang="en">Source &rarr;</span>
-                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                    <span class="t-en" lang="en">Web source &rarr;</span>
+                    <span class="t-ko" lang="ko">웹 소스 코드 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/canopydiary-android" target="_blank">
+                    <span class="t-en" lang="en">Android source &rarr;</span>
+                    <span class="t-ko" lang="ko">안드로이드 소스 코드 &rarr;</span>
                 </a>
             </div>
         </article>
@@ -996,6 +1094,8 @@
             <div class="tags">
                 <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
                         lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Android</span><span class="t-ko"
+                        lang="ko">안드로이드</span></span>
                 <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
                         lang="ko">바닐라 JS</span></span>
                 <span class="tag">Firebase</span>
@@ -1028,6 +1128,12 @@
                         configured.</span>
                     <span class="t-ko" lang="ko">프레임워크도 웹 폰트도 쓰지 않으며, Firebase는 동기화를 설정한 경우에만 내려받습니다.</span>
                 </li>
+                <li>
+                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) reads the same Firestore
+                        database, with offline-first storage and PDF backup.</span>
+                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)가 같은 Firestore 데이터베이스를 사용하며, 오프라인
+                        우선 저장과 PDF 백업을 지원합니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -1044,8 +1150,12 @@
                     <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
                 </a>
                 <a href="https://github.com/hanifedma/ponder" target="_blank">
-                    <span class="t-en" lang="en">Source &rarr;</span>
-                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                    <span class="t-en" lang="en">Web source &rarr;</span>
+                    <span class="t-ko" lang="ko">웹 소스 코드 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/ponder-android" target="_blank">
+                    <span class="t-en" lang="en">Android source &rarr;</span>
+                    <span class="t-ko" lang="ko">안드로이드 소스 코드 &rarr;</span>
                 </a>
             </div>
         </article>
@@ -1055,6 +1165,8 @@
             <div class="tags">
                 <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
                         lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Android</span><span class="t-ko"
+                        lang="ko">안드로이드</span></span>
                 <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
                         lang="ko">바닐라 JS</span></span>
                 <span class="tag">Firebase</span>
@@ -1092,6 +1204,12 @@
                         a slow connection, few CPU cores, or little RAM.</span>
                     <span class="t-ko" lang="ko">라이트 모드는 블러와 광원 효과, 배경 움직임을 끄며, 느린 연결이나 적은 CPU 코어·메모리에서는 스스로 켜집니다.</span>
                 </li>
+                <li>
+                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) adds a live lock-screen
+                        timer that survives Doze and reboots, plus metabolic-stage alerts.</span>
+                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)는 Doze 모드와 재부팅 후에도 유지되는 잠금화면
+                        타이머와 대사 단계 알림을 제공합니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -1108,8 +1226,12 @@
                     <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
                 </a>
                 <a href="https://github.com/hanifedma/waterline" target="_blank">
-                    <span class="t-en" lang="en">Source &rarr;</span>
-                    <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
+                    <span class="t-en" lang="en">Web source &rarr;</span>
+                    <span class="t-ko" lang="ko">웹 소스 코드 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/waterline-android" target="_blank">
+                    <span class="t-en" lang="en">Android source &rarr;</span>
+                    <span class="t-ko" lang="ko">안드로이드 소스 코드 &rarr;</span>
                 </a>
             </div>
         </article>
@@ -1119,6 +1241,8 @@
             <div class="tags">
                 <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
                         lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Android</span><span class="t-ko"
+                        lang="ko">안드로이드</span></span>
                 <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
                         lang="ko">바닐라 JS</span></span>
                 <span class="tag">Supabase</span>
@@ -1151,6 +1275,12 @@
                     <span class="t-ko" lang="ko">Supabase와 구글 로그인을 선택하면 기록은 물론 진행 중인 타이머까지 기기 사이에 동기화되고, 행 수준 보안으로 각자
                         자신의 데이터만 다룰 수 있습니다.</span>
                 </li>
+                <li>
+                    <span class="t-en" lang="en">A native Android port (Kotlin) shares the same Supabase backend as the
+                        web app, so sessions and projects follow you between them.</span>
+                    <span class="t-ko" lang="ko">네이티브 안드로이드 포트(Kotlin)가 웹 앱과 같은 Supabase 백엔드를 사용해, 세션과 프로젝트가
+                        양쪽에서 그대로 이어집니다.</span>
+                </li>
             </ul>
             <div class="project-media">
                 <picture>
@@ -1167,24 +1297,116 @@
                     <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
                 </a>
                 <a href="https://github.com/hanifedma/timbertimer" target="_blank">
+                    <span class="t-en" lang="en">Web source &rarr;</span>
+                    <span class="t-ko" lang="ko">웹 소스 코드 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/timbertimer-android" target="_blank">
+                    <span class="t-en" lang="en">Android source &rarr;</span>
+                    <span class="t-ko" lang="ko">안드로이드 소스 코드 &rarr;</span>
+                </a>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>Streak</h2>
+            <div class="tags">
+                <span class="tag"><span class="t-en" lang="en">Web app</span><span class="t-ko"
+                        lang="ko">웹 앱</span></span>
+                <span class="tag"><span class="t-en" lang="en">Android</span><span class="t-ko"
+                        lang="ko">안드로이드</span></span>
+                <span class="tag"><span class="t-en" lang="en">Vanilla JS</span><span class="t-ko"
+                        lang="ko">바닐라 JS</span></span>
+                <span class="tag">Firebase</span>
+                <span class="tag">PWA</span>
+            </div>
+            <ul>
+                <li>
+                    <span class="t-en" lang="en">Habit tracker with a grid of days and a today checklist, for yes/no
+                        habits or measurable goals with a target and a unit.</span>
+                    <span class="t-ko" lang="ko">날짜 격자와 오늘 체크리스트로 습관을 기록합니다. 예/아니오 습관은 물론 목표치와 단위를 가진 습관도
+                        지원합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Streaks, 30-day completion rates, a heatmap calendar and a weekday
+                        breakdown; skipped days leave the streak intact.</span>
+                    <span class="t-ko" lang="ko">연속 기록과 30일 달성률, 히트맵 달력, 요일별 통계를 보여주며, 건너뛴 날은 연속 기록에 영향을 주지
+                        않습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Usable with no account at all; Google sign-in adds real-time sync
+                        across devices, and everything keeps working offline.</span>
+                    <span class="t-ko" lang="ko">계정 없이도 모든 기능을 쓸 수 있고, 구글 로그인을 하면 기기 간 실시간 동기화가 되며 오프라인에서도
+                        동작합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) shares the same Firestore
+                        database and adds a home-screen widget.</span>
+                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)가 같은 Firestore 데이터베이스를 사용하며, 홈 화면
+                        위젯을 제공합니다.</span>
+                </li>
+            </ul>
+            <div class="project-links">
+                <a href="https://hanifedma.com/streak/" target="_blank">
+                    <span class="t-en" lang="en">Open app &rarr;</span>
+                    <span class="t-ko" lang="ko">앱 열기 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/streak" target="_blank">
+                    <span class="t-en" lang="en">Web source &rarr;</span>
+                    <span class="t-ko" lang="ko">웹 소스 코드 &rarr;</span>
+                </a>
+                <a href="https://github.com/hanifedma/streak-android" target="_blank">
+                    <span class="t-en" lang="en">Android source &rarr;</span>
+                    <span class="t-ko" lang="ko">안드로이드 소스 코드 &rarr;</span>
+                </a>
+            </div>
+        </article>
+
+        <article class="project">
+            <h2>WhiteRose</h2>
+            <div class="tags">
+                <span class="tag"><span class="t-en" lang="en">Watch app</span><span class="t-ko"
+                        lang="ko">워치 앱</span></span>
+                <span class="tag">Wear OS</span>
+                <span class="tag">Kotlin</span>
+                <span class="tag">Galaxy Watch 7</span>
+            </div>
+            <ul>
+                <li>
+                    <span class="t-en" lang="en">Buzzes the wrist once every minute, on the minute, and does nothing
+                        else — it runs in the background and never takes audio focus.</span>
+                    <span class="t-ko" lang="ko">매분 정각에 손목을 한 번 울려줄 뿐, 다른 일은 하지 않습니다. 백그라운드에서 동작하며 오디오 포커스를 가져가지
+                        않습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Vibration, a beep, or both — five strengths and single, double, triple
+                        or long patterns, each configured on its own.</span>
+                    <span class="t-ko" lang="ko">진동과 알림음을 따로 또는 함께 쓸 수 있고, 세기 5단계와 단발·2회·3회·길게 패턴을 각각 설정할 수
+                        있습니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Quiet hours stay armed without alerting, and it restarts itself after
+                        a reboot.</span>
+                    <span class="t-ko" lang="ko">방해 금지 시간에는 알리지 않은 채 대기하고, 재부팅 후에도 스스로 다시 시작합니다.</span>
+                </li>
+                <li>
+                    <span class="t-en" lang="en">Built for my Galaxy Watch 7 on Wear OS 5, and installed over ADB from
+                        the source.</span>
+                    <span class="t-ko" lang="ko">Wear OS 5를 쓰는 제 갤럭시 워치 7을 위해 만들었고, 소스에서 빌드해 ADB로 설치합니다.</span>
+                </li>
+            </ul>
+            <div class="project-media">
+                <img src="whiterose.png"
+                    alt="WhiteRose on a Galaxy Watch — a minute countdown ring reading 'Every minute, on the minute'"
+                    data-ko-alt="갤럭시 워치의 WhiteRose — '매분 정각'이라고 적힌 1분 카운트다운 링" loading="lazy" width="384"
+                    height="384">
+            </div>
+            <div class="project-links">
+                <a href="https://github.com/hanifedma/WhiteRose" target="_blank">
                     <span class="t-en" lang="en">Source &rarr;</span>
                     <span class="t-ko" lang="ko">소스 코드 &rarr;</span>
                 </a>
             </div>
         </article>
-
-        <footer class="present-footer">
-            <p class="present-link">
-                <a href="/portfolio_presentation/">
-                    <span class="t-en" lang="en">View as a slide presentation &rarr;</span>
-                    <span class="t-ko" lang="ko">슬라이드 자료로 보기 &rarr;</span>
-                </a>
-            </p>
-            <p class="present-note">
-                <span class="t-en" lang="en">This slide presentation is prepared for interview purposes.</span>
-                <span class="t-ko" lang="ko">이 슬라이드 자료는 면접용으로 준비했습니다.</span>
-            </p>
-        </footer>
     </main>
 
     <script>
@@ -1198,7 +1420,7 @@
         // The language is also chosen pre-paint, and CSS already shows the right half of
         // the markup. What is left is the switch itself, and the strings that live in
         // attributes, where two languages cannot sit side by side.
-        const langButtons = document.querySelectorAll('[data-set-lang]');
+        const langToggle = document.querySelector('[data-toggle-lang]');
 
         function applyLang(lang) {
             root.setAttribute('data-lang', lang);
@@ -1207,9 +1429,11 @@
             const desc = document.querySelector('meta[name="description"]');
             if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
 
-            langButtons.forEach((b) => {
-                b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
-            });
+            // The visible label is one letter or two, so the button says out loud what
+            // it is showing and what pressing it does.
+            if (langToggle) {
+                langToggle.setAttribute('aria-label', lang === 'ko' ? '한 — 영어로 전환' : 'EN — 한국어로 전환');
+            }
             document.querySelectorAll('[data-ko-alt]').forEach((el) => {
                 if (el.dataset.enAlt === undefined) el.dataset.enAlt = el.getAttribute('alt') || '';
                 el.setAttribute('alt', lang === 'ko' ? el.dataset.koAlt : el.dataset.enAlt);
@@ -1218,14 +1442,15 @@
 
         applyLang(root.getAttribute('data-lang') === 'ko' ? 'ko' : 'en');
 
-        langButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                applyLang(btn.dataset.setLang);
+        if (langToggle) {
+            langToggle.addEventListener('click', () => {
+                const next = root.getAttribute('data-lang') === 'ko' ? 'en' : 'ko';
+                applyLang(next);
                 try {
-                    localStorage.setItem('lang', btn.dataset.setLang);
+                    localStorage.setItem('lang', next);
                 } catch (e) { /* storage may be unavailable; the choice still holds for this visit */ }
             });
-        });
+        }
 
         toggleSwitch.addEventListener('change', () => {
             const isDark = toggleSwitch.checked;
@@ -1246,17 +1471,35 @@
         // who asked for reduced motion gets no autoplay; every clip waits on a click.
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if ('IntersectionObserver' in window) {
+            // Half the panel has to be on screen before a clip starts, so a two-up row
+            // runs as a pair without the row below joining in — a weak machine decodes
+            // two clips at most. Pausing waits until the clip has left entirely, so
+            // scrolling a little does not stop the one you are watching.
+            const inView = new Set();
+            const resume = (video) => {
+                if (video.dataset.autoplay !== undefined && !reduceMotion) video.play().catch(() => { });
+            };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     const video = entry.target;
-                    if (entry.isIntersecting) {
-                        if (video.dataset.autoplay !== undefined && !reduceMotion) video.play().catch(() => { });
-                    } else {
+                    if (entry.intersectionRatio >= 0.5) {
+                        inView.add(video);
+                        resume(video);
+                    } else if (!entry.isIntersecting) {
+                        inView.delete(video);
                         video.pause();
                     }
                 });
-            }, { threshold: 0.25 });
+            }, { threshold: [0, 0.5] });
             document.querySelectorAll('video').forEach((video) => observer.observe(video));
+
+            // A backgrounded tab can keep decoding video. Stop the clips while the tab
+            // is hidden and pick up exactly the ones still on screen on the way back —
+            // the observer would not fire again on its own without a scroll.
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) inView.forEach((video) => video.pause());
+                else inView.forEach(resume);
+            });
         }
 
         // Reload an already-open tab once a new version is deployed. The check only

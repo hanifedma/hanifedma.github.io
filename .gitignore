@@ -16,20 +16,3 @@ portfolio/robot_6dof_opengl/
 # Resume_Hanif_Edma_Fauz.pdf).
 portfolio-pdf/
 resume/
-portfolio_presentation/portfolio_presentation.aux
-portfolio_presentation/portfolio_presentation.fdb_latexmk
-portfolio_presentation/portfolio_presentation.fls
-portfolio_presentation/portfolio_presentation.log
-portfolio_presentation/portfolio_presentation.nav
-portfolio_presentation/portfolio_presentation.out
-portfolio_presentation/portfolio_presentation.snm
-portfolio_presentation/portfolio_presentation.toc
-
-# Heavy raw source for the 1st-paper real-world clip — kept local only.
-# The web page uses the compressed propose_rw_demo.mp4 + poster; the deck uses
-# propose_rw_1stpaper.png (both committed).
-portfolio_presentation/propose_rw_first_paper.mp4
-portfolio_presentation/corr_detect_app/image1.png
-portfolio_presentation/corr_detect_app/image2.png
-portfolio_presentation/corr_detect_app/image3.png
-portfolio_presentation/corr_detect_app/image4.jpeg

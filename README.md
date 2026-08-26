@@ -1,8 +1,7 @@
 # hanifedma.com
 
-Source for my personal site — a home page, a portfolio, and a slide-style version of the
-portfolio prepared for interviews. Served by GitHub Pages from the `main` branch and mapped
-onto `hanifedma.com` by the [`CNAME`](CNAME) file.
+Source for my personal site — a home page and a portfolio. Served by GitHub Pages from the
+`main` branch and mapped onto `hanifedma.com` by the [`CNAME`](CNAME) file.
 
 **Live:** <https://hanifedma.com>
 
@@ -10,15 +9,14 @@ onto `hanifedma.com` by the [`CNAME`](CNAME) file.
 
 | Path | What it is |
 |------|-----------|
-| `index.html` | Home page — intro, links, and two looping clips from the published work |
-| `portfolio/index.html` | Portfolio — research, engineering projects, and web apps |
-| `portfolio_presentation/index.html` | The same material as a slide deck, plus the deck as a PDF |
+| `index.html` | Home page — intro, links, a looping clip and a figure from the published work |
+| `portfolio/index.html` | Portfolio — research, engineering projects, and apps |
 | `404.html` | Not-found page — GitHub Pages serves it for any unknown path |
 | `og-image.png` | 1200×630 preview image shown when a link is shared |
 | `robots.txt`, `sitemap.xml` | Crawler directives and the list of pages |
 | `favicon/` | Icons and the web manifest |
 | `Resume_Hanif_Edma_Fauz.pdf` | The resume linked from the home page |
-| `*.webm`, `*_poster.jpg` | Home page demo clips and their poster frames |
+| `*.webm`, `*_poster.jpg` | Home page demo clip and its poster frame |
 
 Each page is a single self-contained HTML file with its CSS and JavaScript inline. There is no
 framework, no build step, and nothing to install.
@@ -45,11 +43,14 @@ The site is built to open quickly on a slow connection and to run on a machine w
 - **No render-blocking requests.** CSS and JS are inline, so a page is one request.
 - **Video is deferred.** Clips carry `preload="none"` and a poster frame; an `IntersectionObserver`
   starts them only once they scroll into view and pauses them when they leave. The home page's
-  ~1.4 MB of video is never fetched by a visitor who does not scroll to it, and no clip decodes
+  ~270 KB of video is never fetched by a visitor who does not scroll to it, and no clip decodes
   off-screen.
 - **Images are lazy and sized.** `<picture>` serves WebP with a JPEG fallback, every image
   declares `width`/`height` so nothing shifts as the page loads, and off-screen images are
   `loading="lazy"`.
+- **The portfolio's media shares one box.** A project carrying several stills or clips lays them
+  out two-up, and every panel uses the same 4:3 box with `object-fit: contain`, so plots,
+  screenshots and footage line up without anything being cropped to fit.
 - **The theme is applied before the first paint**, so there is no flash of the wrong colours,
   and transitions stay switched off until the first frame has painted.
 

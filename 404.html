@@ -107,41 +107,33 @@
             padding: 1.5rem 1.5rem 0;
         }
 
-        .lang-switch {
-            display: inline-flex;
-            align-items: center;
+        /* One button showing the language you are reading: EN in English, 한 in
+           Korean. Its label is the same bilingual markup as the rest of the page,
+           so it flips with everything else and needs no script of its own. The
+           fixed width keeps the row from shifting as the label changes. */
+        .lang-toggle {
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1;
+            min-width: 2.6rem;
+            padding: 0.5rem 0.6rem;
             border: 1px solid var(--border);
             border-radius: 999px;
             background: var(--card-bg);
-            overflow: hidden;
-        }
-
-        .lang-btn {
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 500;
-            line-height: 1;
-            padding: 0.5rem 0.8rem;
-            border: 0;
-            background: transparent;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: background-color 0.15s, color 0.15s;
+            transition: background-color 0.18s, color 0.18s, border-color 0.18s;
         }
 
-        .lang-btn:hover {
-            color: var(--accent);
+        .lang-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
-        .lang-btn[aria-pressed="true"] {
-            background: var(--accent);
-            color: #ffffff;
-            cursor: default;
-        }
-
-        .lang-btn:focus-visible {
+        .lang-toggle:focus-visible {
             outline: 2px solid var(--accent);
-            outline-offset: -4px;
+            outline-offset: 2px;
         }
 
         main {
@@ -219,10 +211,9 @@
 
 <body>
     <div class="top-bar">
-        <div class="lang-switch" role="group" aria-label="Language / 언어">
-            <button type="button" class="lang-btn" data-set-lang="en" aria-pressed="true">EN</button>
-            <button type="button" class="lang-btn" data-set-lang="ko" lang="ko" aria-pressed="false">한국어</button>
-        </div>
+        <button type="button" class="lang-toggle" data-toggle-lang>
+            <span class="t-en" lang="en">EN</span><span class="t-ko" lang="ko">한</span>
+        </button>
     </div>
 
     <main>
@@ -249,25 +240,28 @@
 
     <script>
         const root = document.documentElement;
-        const langButtons = document.querySelectorAll('[data-set-lang]');
+        const langToggle = document.querySelector('[data-toggle-lang]');
 
         function applyLang(lang) {
             root.setAttribute('data-lang', lang);
             root.setAttribute('lang', lang);
             document.title = meta404[lang].title;
-            langButtons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)));
+            if (langToggle) {
+                langToggle.setAttribute('aria-label', lang === 'ko' ? '한 — 영어로 전환' : 'EN — 한국어로 전환');
+            }
         }
 
         applyLang(root.getAttribute('data-lang') === 'ko' ? 'ko' : 'en');
 
-        langButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                applyLang(btn.dataset.setLang);
+        if (langToggle) {
+            langToggle.addEventListener('click', () => {
+                const next = root.getAttribute('data-lang') === 'ko' ? 'en' : 'ko';
+                applyLang(next);
                 try {
-                    localStorage.setItem('lang', btn.dataset.setLang);
+                    localStorage.setItem('lang', next);
                 } catch (e) { /* storage may be unavailable; the choice still holds for this visit */ }
             });
-        });
+        }
 
         // Re-enable transitions once the first frame has painted.
         requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));

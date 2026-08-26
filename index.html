@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Hanif Edma — research assistant in Seoul focusing on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
+        content="Hanif Edma — robotics and control researcher based in Indonesia, working on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
     <meta name="theme-color" content="#0f0f0f">
     <title>Hanif Edma</title>
     <meta name="author" content="Hanif Edma">
@@ -21,19 +21,19 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Hanif Edma">
     <meta property="og:url" content="https://hanifedma.com/">
-    <meta property="og:title" content="Hanif Edma — Research Assistant, Robust Robot Control">
+    <meta property="og:title" content="Hanif Edma — Robotics and Control Researcher">
     <meta property="og:description"
-        content="Research assistant in Seoul working on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
+        content="Robotics and control researcher based in Indonesia, working on robust robot control at the intersection of electrical engineering, control engineering, and robotics.">
     <meta property="og:image" content="https://hanifedma.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Hanif Edma — Research Assistant, robust robot control. Seoul, South Korea.">
+    <meta property="og:image:alt" content="Hanif Edma — robust robot control, at the intersection of control engineering and robotics.">
     <meta property="og:locale" content="en_US">
     <meta property="og:locale:alternate" content="ko_KR">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Hanif Edma — Research Assistant, Robust Robot Control">
+    <meta name="twitter:title" content="Hanif Edma — Robotics and Control Researcher">
     <meta name="twitter:description"
-        content="Research assistant in Seoul working on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.">
+        content="Robotics and control researcher based in Indonesia, working on robust robot control at the intersection of electrical engineering, control engineering, and robotics.">
     <meta name="twitter:image" content="https://hanifedma.com/og-image.png">
 
     <!-- Structured data: tells search engines this page is about a person, so the name,
@@ -45,12 +45,11 @@
         "name": "Hanif Edma",
         "url": "https://hanifedma.com/",
         "image": "https://hanifedma.com/og-image.png",
-        "jobTitle": "Research Assistant",
-        "description": "Research assistant in Seoul working on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.",
+        "jobTitle": "Robotics and Control Researcher",
+        "description": "Robotics and control researcher based in Indonesia, working on robust robot control at the intersection of electrical engineering, control engineering, and robotics.",
         "address": {
             "@type": "PostalAddress",
-            "addressLocality": "Seoul",
-            "addressCountry": "KR"
+            "addressCountry": "ID"
         },
         "knowsAbout": [
             "Control Engineering",
@@ -73,11 +72,11 @@
         window.i18nMeta = {
             en: {
                 title: 'Hanif Edma',
-                description: 'Hanif Edma — research assistant in Seoul focusing on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.'
+                description: 'Hanif Edma — robotics and control researcher based in Indonesia, working on robust robot control, at the intersection of electrical engineering, control engineering, and robotics.'
             },
             ko: {
                 title: 'Hanif Edma',
-                description: 'Hanif Edma — 서울에서 로봇의 강건 제어를 연구하는 연구원. 전기공학, 제어공학, 로보틱스가 교차하는 분야를 연구합니다.'
+                description: 'Hanif Edma — 인도네시아에 기반을 두고 로봇의 강건 제어를 연구합니다. 전기공학, 제어공학, 로보틱스가 교차하는 분야에 집중하고 있습니다.'
             }
         };
         try {
@@ -205,41 +204,33 @@
             gap: 1rem;
         }
 
-        .lang-switch {
-            display: inline-flex;
-            align-items: center;
+        /* One button showing the language you are reading: EN in English, 한 in
+           Korean. Its label is the same bilingual markup as the rest of the page,
+           so it flips with everything else and needs no script of its own. The
+           fixed width keeps the top bar from shifting as the label changes. */
+        .lang-toggle {
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1;
+            min-width: 2.6rem;
+            padding: 0.5rem 0.6rem;
             border: 1px solid var(--border);
             border-radius: 999px;
             background: var(--card-bg);
-            overflow: hidden;
-        }
-
-        .lang-btn {
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 500;
-            line-height: 1;
-            padding: 0.5rem 0.8rem;
-            border: 0;
-            background: transparent;
             color: var(--text-secondary);
             cursor: pointer;
-            transition: background-color 0.15s, color 0.15s;
+            transition: background-color 0.18s, color 0.18s, border-color 0.18s;
         }
 
-        .lang-btn:hover {
-            color: var(--accent);
+        .lang-toggle:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
         }
 
-        .lang-btn[aria-pressed="true"] {
-            background: var(--accent);
-            color: #ffffff;
-            cursor: default;
-        }
-
-        .lang-btn:focus-visible {
+        .lang-toggle:focus-visible {
             outline: 2px solid var(--accent);
-            outline-offset: -4px;
+            outline-offset: 2px;
         }
 
         .theme-switch-wrapper {
@@ -501,7 +492,8 @@
             border: 1px solid var(--border);
         }
 
-        video {
+        .media-container video,
+        .media-container img {
             width: 100%;
             height: auto;
             display: block;
@@ -633,11 +625,9 @@
                 </a>
             </nav>
             <div class="top-actions">
-                <div class="lang-switch" role="group" aria-label="Language / 언어">
-                    <button type="button" class="lang-btn" data-set-lang="en" aria-pressed="true">EN</button>
-                    <button type="button" class="lang-btn" data-set-lang="ko" lang="ko"
-                        aria-pressed="false">한국어</button>
-                </div>
+                <button type="button" class="lang-toggle" data-toggle-lang>
+                    <span class="t-en" lang="en">EN</span><span class="t-ko" lang="ko">한</span>
+                </button>
                 <div class="theme-switch-wrapper">
                     <label class="theme-switch" for="checkbox">
                         <input type="checkbox" id="checkbox" />
@@ -668,22 +658,13 @@
                         lang="ko">안녕하세요, Hanif Edma입니다</span></h1>
                 <p>
                     <span class="t-en" lang="en">
-                        Currently a research assistant based in Seoul, South Korea 🇰🇷.
-                        Focuses on the intersection of electrical engineering,
-                        control engineering, and robotics.
+                        Currently based in Indonesia 🇮🇩. Previously a research assistant in
+                        Seoul, South Korea 🇰🇷, working at the intersection of electrical
+                        engineering, control engineering, and robotics.
                     </span>
                     <span class="t-ko" lang="ko">
-                        현재 대한민국 서울에서 연구원으로 일하고 있습니다 🇰🇷.
-                        전기공학, 제어공학, 로보틱스가 만나는 지점을 연구합니다.
-                    </span>
-                </p>
-                <p>
-                    <span class="t-en" lang="en">
-                        My current research focuses on control engineering and its implementation to robotics. I'm
-                        passionate about exploring math and technology.
-                    </span>
-                    <span class="t-ko" lang="ko">
-                        지금은 제어공학과 이를 로보틱스에 구현하는 일에 집중하고 있습니다. 수학과 기술을 파고드는 것을 좋아합니다.
+                        현재 인도네시아 🇮🇩에 있습니다. 이전에는 대한민국 서울 🇰🇷에서 연구원으로 일하며
+                        전기공학, 제어공학, 로보틱스가 만나는 지점을 연구했습니다.
                     </span>
                 </p>
                 <p>
@@ -702,34 +683,39 @@
                 </p>
                 <p>
                     <span class="t-en" lang="en">
-                        On the side, I build and run small web apps that I use myself and that anyone is welcome
-                        to use—<strong><a href="https://hanifedma.com/canopydiary/"
-                                target="_blank">CanopyDiary</a></strong>
-                        (a diary), <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>
+                        On the side I build open-source apps, each with a web and an Android version:
+                        <strong><a href="https://hanifedma.com/canopydiary/"
+                                target="_blank">CanopyDiary</a></strong> (a diary),
+                        <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>
                         (quotes &amp; thoughts),
                         <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>
-                        (a fasting tracker), and
+                        (fasting),
                         <strong><a href="https://hanifedma.com/timbertimer/" target="_blank">TimberTimer</a></strong>
-                        (a focus timer).
+                        (focus), and
+                        <strong><a href="https://hanifedma.com/streak/" target="_blank">Streak</a></strong>
+                        (habits) — plus
+                        <strong><a href="https://github.com/hanifedma/WhiteRose"
+                                target="_blank">WhiteRose</a></strong>, a Wear OS app for my Galaxy Watch.
                     </span>
                     <span class="t-ko" lang="ko">
-                        틈틈이 직접 쓰려고 만든 작은 웹 앱들을 운영하고 있으며, 누구나 자유롭게 쓰실 수 있습니다 —
+                        틈틈이 오픈소스 앱을 만듭니다. 웹과 안드로이드 버전이 함께 있습니다 —
                         <strong><a href="https://hanifedma.com/canopydiary/" target="_blank">CanopyDiary</a></strong>(일기),
                         <strong><a href="https://hanifedma.com/ponder/" target="_blank">Ponder</a></strong>(인용구와 생각),
-                        <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>(단식 기록),
-                        <strong><a href="https://hanifedma.com/timbertimer/"
-                                target="_blank">TimberTimer</a></strong>(집중 타이머).
+                        <strong><a href="https://hanifedma.com/waterline/" target="_blank">Waterline</a></strong>(단식),
+                        <strong><a href="https://hanifedma.com/timbertimer/" target="_blank">TimberTimer</a></strong>(집중),
+                        <strong><a href="https://hanifedma.com/streak/" target="_blank">Streak</a></strong>(습관).
+                        갤럭시 워치용 Wear OS 앱
+                        <strong><a href="https://github.com/hanifedma/WhiteRose"
+                                target="_blank">WhiteRose</a></strong>도 만들었습니다.
                     </span>
                 </p>
                 <p>
                     <span class="t-en" lang="en">
-                        Outside of work, I enjoy running 🏃, watching movies, and deep-diving into
-                        math videos—especially
-                        3Blue1Brown. Also spend my time doing juggling 🤹‍♂️ and learning about tech.
+                        Outside of research: running 🏃, movies, juggling 🤹‍♂️, and math
+                        videos—especially 3Blue1Brown.
                     </span>
                     <span class="t-ko" lang="ko">
-                        일 외에는 달리기 🏃와 영화 감상을 즐기고, 수학 영상, 특히 3Blue1Brown에 깊이 빠져듭니다.
-                        저글링 🤹‍♂️과 새로운 기술을 배우는 데에도 시간을 씁니다.
+                        연구 외에는 달리기 🏃, 영화, 저글링 🤹‍♂️, 그리고 수학 영상을 즐깁니다 — 특히 3Blue1Brown.
                     </span>
                 </p>
             </header>
@@ -742,10 +728,13 @@
                     </video>
                 </div>
                 <div class="media-container">
-                    <video muted loop playsinline preload="none" width="426" height="240"
-                        poster="real_world_poster.jpg">
-                        <source src="real_world_vid.webm" type="video/webm">
-                    </video>
+                    <picture>
+                        <source srcset="portfolio/gpramppi.webp" type="image/webp">
+                        <img src="portfolio/gpramppi.jpg"
+                            alt="Method framework: offline data collection, a Gaussian Process residual model, and online risk-aware MPPI control on the F1TENTH car"
+                            data-ko-alt="방법 구성도 — 오프라인 데이터 수집, 가우시안 프로세스 잔차 모델, 그리고 F1TENTH 차량에서의 온라인 위험 인지 MPPI 제어"
+                            loading="lazy" width="843" height="403">
+                    </picture>
                 </div>
                 <div class="caption">
                     <strong><a href="https://doi.org/10.1109/ACCESS.2025.3640166" target="_blank">
@@ -776,7 +765,7 @@
         // The language is also chosen pre-paint, and CSS already shows the right half of
         // the markup. What is left is the switch itself, and the strings that live in
         // attributes, where two languages cannot sit side by side.
-        const langButtons = document.querySelectorAll('[data-set-lang]');
+        const langToggle = document.querySelector('[data-toggle-lang]');
 
         function applyLang(lang) {
             root.setAttribute('data-lang', lang);
@@ -785,25 +774,32 @@
             const desc = document.querySelector('meta[name="description"]');
             if (desc) desc.setAttribute('content', window.i18nMeta[lang].description);
 
-            langButtons.forEach((b) => {
-                b.setAttribute('aria-pressed', String(b.dataset.setLang === lang));
-            });
+            // The visible label is one letter or two, so the button says out loud what
+            // it is showing and what pressing it does.
+            if (langToggle) {
+                langToggle.setAttribute('aria-label', lang === 'ko' ? '한 — 영어로 전환' : 'EN — 한국어로 전환');
+            }
             document.querySelectorAll('[data-ko-title]').forEach((el) => {
                 if (el.dataset.enTitle === undefined) el.dataset.enTitle = el.getAttribute('title') || '';
                 el.setAttribute('title', lang === 'ko' ? el.dataset.koTitle : el.dataset.enTitle);
+            });
+            document.querySelectorAll('[data-ko-alt]').forEach((el) => {
+                if (el.dataset.enAlt === undefined) el.dataset.enAlt = el.getAttribute('alt') || '';
+                el.setAttribute('alt', lang === 'ko' ? el.dataset.koAlt : el.dataset.enAlt);
             });
         }
 
         applyLang(root.getAttribute('data-lang') === 'ko' ? 'ko' : 'en');
 
-        langButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-                applyLang(btn.dataset.setLang);
+        if (langToggle) {
+            langToggle.addEventListener('click', () => {
+                const next = root.getAttribute('data-lang') === 'ko' ? 'en' : 'ko';
+                applyLang(next);
                 try {
-                    localStorage.setItem('lang', btn.dataset.setLang);
+                    localStorage.setItem('lang', next);
                 } catch (e) { /* storage may be unavailable; the choice still holds for this visit */ }
             });
-        });
+        }
 
         toggleSwitch.addEventListener('change', () => {
             const isDark = toggleSwitch.checked;
@@ -830,22 +826,34 @@
         }
         stampResume();
 
-        // The clips carry preload="none" and a poster, so the ~1.4 MB of video is only
+        // The clip carries preload="none" and a poster, so its ~270 KB of video is only
         // fetched once one scrolls into view — the text renders first on a slow link.
-        // Leaving the viewport pauses them again, to save CPU on devices without a GPU.
+        // Leaving the viewport pauses it again, to save CPU on devices without a GPU.
         // A visitor who asked for reduced motion keeps the still poster (and the bytes).
         const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if ('IntersectionObserver' in window && !reduceMotion) {
+            const inView = new Set();
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
+                        inView.add(entry.target);
                         entry.target.play().catch(() => { });
                     } else {
+                        inView.delete(entry.target);
                         entry.target.pause();
                     }
                 });
             }, { threshold: 0.1 });
             document.querySelectorAll('video').forEach((video) => observer.observe(video));
+
+            // A backgrounded tab can keep decoding video. Stop while it is hidden and
+            // pick up again on return; the observer would not fire without a scroll.
+            document.addEventListener('visibilitychange', () => {
+                inView.forEach((video) => {
+                    if (document.hidden) video.pause();
+                    else video.play().catch(() => { });
+                });
+            });
         }
 
         // Reload an already-open tab once a new version is deployed. The check only
