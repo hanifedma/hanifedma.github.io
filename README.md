@@ -11,6 +11,7 @@ Source for my personal site — a home page and a portfolio. Served by GitHub Pa
 |------|-----------|
 | `index.html` | Home page — intro, links, and two looping clips from the published work |
 | `portfolio/index.html` | Portfolio — research, engineering projects, and apps |
+| `portfolio/*_web.*`, `portfolio/*_android.*` | App screenshots, taken from each app's own repo |
 | `404.html` | Not-found page — GitHub Pages serves it for any unknown path |
 | `og-image.png` | 1200×630 preview image shown when a link is shared |
 | `robots.txt`, `sitemap.xml` | Crawler directives and the list of pages |
@@ -45,9 +46,11 @@ The site is built to open quickly on a slow connection and to run on a machine w
   starts them only once they scroll into view and pauses them when they leave. The home page's
   ~1.5 MB of video is never fetched by a visitor who does not scroll to it, and no clip decodes
   off-screen.
-- **Images are lazy and sized.** `<picture>` serves WebP with a JPEG fallback, every image
+- **Images are lazy and sized.** `<picture>` serves WebP with a JPEG or PNG fallback, every image
   declares `width`/`height` so nothing shifts as the page loads, and off-screen images are
-  `loading="lazy"`.
+  `loading="lazy"`. A WebP-capable browser that scrolls the whole portfolio pulls about 1 MB of
+  imagery; the fallbacks are roughly twice that, and are only ever fetched by a browser that
+  needs them.
 - **The portfolio's media shares one box.** A project carrying several stills or clips lays them
   out two-up, and every panel uses the same 4:3 box with `object-fit: contain`, so plots,
   screenshots and footage line up without anything being cropped to fit. App screenshots opt out
