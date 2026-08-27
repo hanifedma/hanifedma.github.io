@@ -139,7 +139,7 @@
            comfortably with a slightly looser line. A long Latin token (a URL) may
            still break, otherwise it would overflow its column. */
         html[data-lang="ko"] body {
-            line-height: 1.75;
+            line-height: 1.85;
             word-break: keep-all;
             overflow-wrap: break-word;
         }
@@ -171,13 +171,13 @@
             font-family: var(--font-main);
             background-color: var(--bg);
             color: var(--text-primary);
-            line-height: 1.6;
-            padding: 3rem 3rem;
+            line-height: 1.75;
+            padding: 4.5rem 3rem 5rem;
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 760px;
+            max-width: 820px;
             margin: 0 auto;
         }
 
@@ -187,7 +187,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 1.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 4.5rem;
         }
 
         .home-link {
@@ -448,11 +448,11 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--text-secondary);
-            margin: 3rem 0 0.25rem;
+            margin: 4.5rem 0 0.5rem;
         }
 
         .project {
-            padding: 1.75rem 0;
+            padding: 3rem 0;
             border-top: 1px solid var(--border);
         }
 
@@ -466,8 +466,8 @@
         .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.75rem 0;
+            gap: 0.6rem;
+            margin: 1.1rem 0;
         }
 
         .tag {
@@ -494,19 +494,20 @@
         .project ul {
             font-size: 1.0625rem;
             color: var(--text-secondary);
-            margin: 0.75rem 0 1.1rem;
+            margin: 1.25rem 0 1.5rem;
             padding-left: 1.2rem;
         }
 
         .project li {
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.2rem;
         }
 
         .project-links {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
-            margin-top: 1.25rem;
+            margin-top: 1.75rem;
         }
 
         .project-links a {
@@ -527,7 +528,7 @@
         }
 
         .project-media {
-            margin-top: 1.25rem;
+            margin-top: 1.75rem;
             max-width: 480px;
         }
 
@@ -537,8 +538,8 @@
         .media-row {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 1.25rem;
-            margin-top: 1.25rem;
+            gap: 1.5rem;
+            margin-top: 1.75rem;
         }
 
         .media-row .panel {
@@ -554,9 +555,30 @@
         }
 
         .panel figcaption {
-            margin-top: 0.6rem;
+            margin-top: 0.8rem;
             font-size: 0.86rem;
             color: var(--text-secondary);
+        }
+
+        /* App screenshots come in every shape — a wide browser window next to a tall
+           phone. Forcing those into the page's 4:3 box would shrink the phone to a
+           sliver, so an app row caps its shots by height and lets each keep its own
+           proportions. Bottom-aligning the panels lines the two captions up. */
+        .app-row {
+            align-items: end;
+        }
+
+        .app-row .panel img,
+        .project-media.app-shot img {
+            aspect-ratio: auto;
+            width: auto;
+            max-width: 100%;
+            max-height: 24rem;
+            margin-inline: auto;
+        }
+
+        .app-row .panel figcaption {
+            text-align: center;
         }
 
         .project-media img,
@@ -590,7 +612,7 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 2rem 1.5rem;
+                padding: 2.5rem 1.5rem 3.5rem;
             }
 
             .project-media {
@@ -710,26 +732,6 @@
                     </picture>
                     <figcaption><span class="t-en" lang="en">F1TENTH platform</span><span class="t-ko"
                             lang="ko">F1TENTH 플랫폼</span></figcaption>
-                </figure>
-            </div>
-            <div class="media-row">
-                <figure class="panel">
-                    <picture>
-                        <source srcset="p1_sim_wo_obs.webp" type="image/webp">
-                        <img src="p1_sim_wo_obs.jpg" alt="Simulation trajectory without obstacles" loading="lazy"
-                            width="900" height="571">
-                    </picture>
-                    <figcaption><span class="t-en" lang="en">Simulation — without obstacles</span><span class="t-ko"
-                            lang="ko">시뮬레이션 — 장애물 없음</span></figcaption>
-                </figure>
-                <figure class="panel">
-                    <picture>
-                        <source srcset="p1_sim_w_obs.webp" type="image/webp">
-                        <img src="p1_sim_w_obs.jpg" alt="Simulation trajectory with obstacles" loading="lazy"
-                            width="900" height="565">
-                    </picture>
-                    <figcaption><span class="t-en" lang="en">Simulation — with obstacles</span><span class="t-ko"
-                            lang="ko">시뮬레이션 — 장애물 있음</span></figcaption>
                 </figure>
             </div>
             <div class="media-row">
@@ -1040,38 +1042,41 @@
             </div>
             <ul>
                 <li>
-                    <span class="t-en" lang="en">Lightweight, local-first diary web app with dated notes.</span>
-                    <span class="t-ko" lang="ko">날짜별로 기록을 남기는, 가볍고 로컬 우선으로 동작하는 일기 웹 앱입니다.</span>
+                    <span class="t-en" lang="en"><strong>Purpose:</strong> a private, local-first diary for dated
+                        notes, with a photo gallery kept separate from the writing.</span>
+                    <span class="t-ko" lang="ko"><strong>목적:</strong> 날짜별로 기록을 남기는 로컬 우선 일기 앱으로, 사진은 글과 분리된
+                        갤러리에 모입니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Date-sorted photo gallery kept separate from the written notes.</span>
-                    <span class="t-ko" lang="ko">글과는 따로, 날짜순으로 정렬되는 사진 갤러리를 함께 제공합니다.</span>
+                    <span class="t-en" lang="en"><strong>Available on:</strong> web and Android, both syncing to the
+                        same account.</span>
+                    <span class="t-ko" lang="ko"><strong>지원 플랫폼:</strong> 웹과 안드로이드, 같은 계정으로 동기화됩니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Autosave and manual PDF export for selected date ranges.</span>
-                    <span class="t-ko" lang="ko">자동 저장을 지원하고, 원하는 기간을 골라 PDF로 내보낼 수 있습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">Optional cloud sync via Supabase + Google sign-in; built with vanilla
-                        JavaScript, HTML, and CSS.</span>
-                    <span class="t-ko" lang="ko">Supabase와 구글 로그인으로 클라우드 동기화를 선택할 수 있으며, 바닐라 JavaScript와 HTML, CSS로
-                        만들었습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A native Android client (Kotlin) syncs both ways with the web app
-                        through the same Supabase project.</span>
-                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin)가 같은 Supabase 프로젝트를 통해 웹 앱과 양방향으로
-                        동기화됩니다.</span>
+                    <span class="t-en" lang="en"><strong>Built with:</strong> vanilla JavaScript, HTML, and CSS on the
+                        web, a native Kotlin client on Android, and Supabase + Google sign-in for the optional
+                        cloud sync behind both. Autosave and PDF export for a date range on either.</span>
+                    <span class="t-ko" lang="ko"><strong>기술:</strong> 웹은 바닐라 JavaScript·HTML·CSS로, 안드로이드는 네이티브
+                        Kotlin으로 만들었고, 둘 다 Supabase와 구글 로그인으로 선택적 클라우드 동기화를 지원합니다. 자동 저장과 기간별 PDF 내보내기는
+                        양쪽 모두에 있습니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="canopydiary.webp" type="image/webp">
-                    <img src="canopydiary.jpg"
-                        alt="CanopyDiary app — diary entry view with a date picker and day pictures panel"
-                        data-ko-alt="CanopyDiary 앱 — 날짜 선택기와 그날의 사진 패널이 있는 일기 작성 화면" loading="lazy" width="960"
-                        height="615">
-                </picture>
+            <div class="media-row app-row">
+                <figure class="panel">
+                    <img src="canopydiary_web.jpg"
+                        alt="CanopyDiary web app — diary entry with a date picker, the day's pictures, and a streak calendar"
+                        data-ko-alt="CanopyDiary 웹 앱 — 날짜 선택기와 그날의 사진, 연속 기록 달력이 있는 일기 화면" loading="lazy"
+                        width="1100" height="749">
+                    <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <img src="canopydiary_android.png"
+                        alt="CanopyDiary Android app — the same diary entry with title, notes, and attached pictures"
+                        data-ko-alt="CanopyDiary 안드로이드 앱 — 제목과 본문, 첨부 사진이 있는 동일한 일기 화면" loading="lazy"
+                        width="540" height="1200">
+                    <figcaption><span class="t-en" lang="en">Android</span><span class="t-ko"
+                            lang="ko">안드로이드</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://hanifedma.com/canopydiary/" target="_blank">
@@ -1104,45 +1109,42 @@
             </div>
             <ul>
                 <li>
-                    <span class="t-en" lang="en">A fast, private place to keep favourite quotes alongside your own
-                        thoughts.</span>
-                    <span class="t-ko" lang="ko">좋아하는 인용구와 자신의 생각을 함께 담아 두는, 빠르고 사적인 공간입니다.</span>
+                    <span class="t-en" lang="en"><strong>Purpose:</strong> a fast, private place to keep favourite
+                        quotes alongside your own thoughts, each dated, sourced, and tagged.</span>
+                    <span class="t-ko" lang="ko"><strong>목적:</strong> 좋아하는 인용구와 생각을 담아 두는 빠르고 사적인 공간으로, 각
+                        기록에 날짜와 출처, 태그가 붙습니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Opens with no login and works offline; entries are saved on the
-                        device.</span>
-                    <span class="t-ko" lang="ko">로그인 없이 바로 열리고 오프라인에서도 동작하며, 기록은 기기에 저장됩니다.</span>
+                    <span class="t-en" lang="en"><strong>Available on:</strong> web and Android; both open with no
+                        login and work fully offline.</span>
+                    <span class="t-ko" lang="ko"><strong>지원 플랫폼:</strong> 웹과 안드로이드, 둘 다 로그인 없이 열리고 오프라인에서도
+                        완전히 동작합니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Optional Google sign-in syncs across devices, with each person seeing
-                        only their own entries.</span>
-                    <span class="t-ko" lang="ko">구글 로그인을 선택하면 기기 사이에 동기화되며, 각자 자신의 기록만 볼 수 있습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">Every entry carries a date, an optional source, and a tag; the whole
-                        collection exports to PDF as a backup.</span>
-                    <span class="t-ko" lang="ko">모든 기록에는 날짜와 선택적인 출처, 그리고 태그가 붙고, 전체를 PDF로 내보내 백업할 수 있습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">No framework and no web fonts — Firebase is downloaded only if sync is
-                        configured.</span>
-                    <span class="t-ko" lang="ko">프레임워크도 웹 폰트도 쓰지 않으며, Firebase는 동기화를 설정한 경우에만 내려받습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) reads the same Firestore
-                        database, with offline-first storage and PDF backup.</span>
-                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)가 같은 Firestore 데이터베이스를 사용하며, 오프라인
-                        우선 저장과 PDF 백업을 지원합니다.</span>
+                    <span class="t-en" lang="en"><strong>Built with:</strong> a framework-free JavaScript web app and
+                        a Kotlin + Compose Android client, both reading the same Firestore database once you sign
+                        in with Google. PDF export backs up the whole collection either way.</span>
+                    <span class="t-ko" lang="ko"><strong>기술:</strong> 프레임워크 없는 JavaScript 웹 앱과 Kotlin·Compose
+                        안드로이드 클라이언트로 만들었고, 구글 로그인 시 같은 Firestore 데이터베이스를 사용합니다. 양쪽 모두 PDF로 전체 기록을 백업할 수
+                        있습니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="ponder.webp" type="image/webp">
-                    <img src="ponder.jpg"
-                        alt="Ponder app — a composer for a quote with an optional source and tag, above search, shuffle and PDF export controls"
-                        data-ko-alt="Ponder 앱 — 출처와 태그를 함께 적는 인용구 입력창, 그 아래로 검색과 셔플, PDF 내보내기 버튼" loading="lazy"
-                        width="960" height="525">
-                </picture>
+            <div class="media-row app-row">
+                <figure class="panel">
+                    <img src="ponder_web.png"
+                        alt="Ponder web app — a composer for a quote with an optional source and tag, above search, shuffle and PDF export controls"
+                        data-ko-alt="Ponder 웹 앱 — 출처와 태그를 함께 적는 인용구 입력창, 그 아래로 검색과 셔플, PDF 내보내기 버튼"
+                        loading="lazy" width="1200" height="759">
+                    <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <img src="ponder_android.png"
+                        alt="Ponder Android app — the same quote composer and list of saved entries"
+                        data-ko-alt="Ponder 안드로이드 앱 — 동일한 인용구 입력창과 저장된 기록 목록" loading="lazy" width="540"
+                        height="1200">
+                    <figcaption><span class="t-en" lang="en">Android</span><span class="t-ko"
+                            lang="ko">안드로이드</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://hanifedma.com/ponder/" target="_blank">
@@ -1174,51 +1176,42 @@
             </div>
             <ul>
                 <li>
-                    <span class="t-en" lang="en">A water-fasting tracker: pick a goal, and a bowl fills with water hour
-                        by hour.</span>
-                    <span class="t-ko" lang="ko">물 단식 기록 앱입니다. 목표를 정하면 시간이 지날수록 그릇에 물이 차오릅니다.</span>
+                    <span class="t-en" lang="en"><strong>Purpose:</strong> a water-fasting tracker that names each
+                        metabolic stage as it passes — insulin falling, glycogen emptying, ketosis, autophagy.</span>
+                    <span class="t-ko" lang="ko"><strong>목적:</strong> 인슐린 감소, 글리코겐 고갈, 케토시스, 자가포식처럼 지나가는 대사
+                        단계를 알려 주는 물 단식 기록 앱입니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Names each stage as it passes — insulin falling, glycogen emptying,
-                        ketosis, autophagy.</span>
-                    <span class="t-ko" lang="ko">인슐린 감소, 글리코겐 고갈, 케토시스, 자가포식처럼 지나가는 단계를 하나씩 알려 줍니다.</span>
+                    <span class="t-en" lang="en"><strong>Available on:</strong> an installable web app (PWA) and
+                        Android, syncing fasts between devices in real time.</span>
+                    <span class="t-ko" lang="ko"><strong>지원 플랫폼:</strong> 설치형 웹 앱(PWA)과 안드로이드로, 단식 기록이 기기 사이에서
+                        실시간으로 동기화됩니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Fasts sync between devices in real time, and a streak calendar chains
-                        consecutive days together.</span>
-                    <span class="t-ko" lang="ko">단식 기록이 기기 사이에서 실시간으로 동기화되고, 연속 달성 달력이 이어진 날들을 묶어 보여 줍니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">Runs signed out and offline as an installable PWA; offline changes
-                        queue and flush on reconnect.</span>
-                    <span class="t-ko" lang="ko">로그인하지 않아도, 오프라인에서도 설치형 PWA로 동작하며, 오프라인에서 바뀐 내용은 다시 연결될 때 반영됩니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">About 40 KB of HTML, CSS, and JS, needing no fonts, frameworks, or
-                        images to render the first screen.</span>
-                    <span class="t-ko" lang="ko">HTML과 CSS, JS를 합쳐 약 40 KB이며, 첫 화면을 그리는 데 폰트도 프레임워크도 이미지도 필요하지
-                        않습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A lite mode drops blur, glow, and ambient motion, and enables itself on
-                        a slow connection, few CPU cores, or little RAM.</span>
-                    <span class="t-ko" lang="ko">라이트 모드는 블러와 광원 효과, 배경 움직임을 끄며, 느린 연결이나 적은 CPU 코어·메모리에서는 스스로 켜집니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) adds a live lock-screen
-                        timer that survives Doze and reboots, plus metabolic-stage alerts.</span>
-                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)는 Doze 모드와 재부팅 후에도 유지되는 잠금화면
-                        타이머와 대사 단계 알림을 제공합니다.</span>
+                    <span class="t-en" lang="en"><strong>Built with:</strong> ~40 KB of framework-free HTML/CSS/JS on
+                        the web, with a lite mode for slow connections and weak hardware; a Kotlin + Compose Android
+                        app adds a live lock-screen timer that survives Doze and reboots. Firebase syncs both.</span>
+                    <span class="t-ko" lang="ko"><strong>기술:</strong> 웹은 프레임워크 없는 HTML/CSS/JS 약 40 KB로, 느린 연결과
+                        저사양 기기에서는 라이트 모드가 자동으로 켜집니다. 안드로이드는 Kotlin·Compose로 만들었고 Doze 모드와 재부팅 후에도 유지되는
+                        잠금화면 타이머가 있습니다. 동기화는 양쪽 다 Firebase로 이루어집니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="waterline.webp" type="image/webp">
-                    <img src="waterline.jpg"
-                        alt="Waterline app — a ring-shaped timer over an empty bowl, with goal lengths from 13h to 72h and a Begin fast button"
-                        data-ko-alt="Waterline 앱 — 빈 그릇 위에 놓인 고리 모양 타이머, 13시간부터 72시간까지의 목표 선택지와 단식 시작 버튼" loading="lazy"
-                        width="960" height="615">
-                </picture>
+            <div class="media-row app-row">
+                <figure class="panel">
+                    <img src="waterline_web.png"
+                        alt="Waterline web app — a ring-shaped timer, streak stats, and a calendar of past fasts"
+                        data-ko-alt="Waterline 웹 앱 — 고리 모양 타이머와 연속 기록 통계, 지난 단식 달력" loading="lazy" width="460"
+                        height="1060">
+                    <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <img src="waterline_android.png"
+                        alt="Waterline Android app — the same ring-shaped timer and fast statistics"
+                        data-ko-alt="Waterline 안드로이드 앱 — 동일한 고리 모양 타이머와 단식 통계" loading="lazy" width="430"
+                        height="955">
+                    <figcaption><span class="t-en" lang="en">Android</span><span class="t-ko"
+                            lang="ko">안드로이드</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://hanifedma.com/waterline/" target="_blank">
@@ -1250,46 +1243,41 @@
             </div>
             <ul>
                 <li>
-                    <span class="t-en" lang="en">A minimalist jungle focus timer, with a separate rest stopwatch that
-                        keeps no records.</span>
-                    <span class="t-ko" lang="ko">정글 테마의 미니멀한 집중 타이머로, 기록을 남기지 않는 휴식용 스톱워치가 따로 있습니다.</span>
+                    <span class="t-en" lang="en"><strong>Purpose:</strong> a minimalist focus timer that grows a
+                        plant through each session, adding one tree to a weekly forest when it finishes.</span>
+                    <span class="t-ko" lang="ko"><strong>목적:</strong> 세션 동안 식물이 자라고, 끝날 때마다 주간 숲에 나무가 한 그루씩
+                        늘어나는 미니멀한 집중 타이머입니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">A plant grows through each session, and every finished session adds one
-                        tree to a weekly forest.</span>
-                    <span class="t-ko" lang="ko">한 세션 동안 식물이 자라고, 세션을 마칠 때마다 주간 숲에 나무가 한 그루씩 늘어납니다.</span>
+                    <span class="t-en" lang="en"><strong>Available on:</strong> web and Android, with sessions and
+                        the running timer following you between them.</span>
+                    <span class="t-ko" lang="ko"><strong>지원 플랫폼:</strong> 웹과 안드로이드, 세션과 진행 중인 타이머가 두 기기에서
+                        그대로 이어집니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Focus history is editable and deletable, with stats for today and all
-                        time.</span>
-                    <span class="t-ko" lang="ko">집중 기록은 수정하거나 삭제할 수 있고, 오늘과 누적 통계를 함께 보여 줍니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">Works out of the box on local browser storage, with no setup and no
-                        account.</span>
-                    <span class="t-ko" lang="ko">설정이나 계정 없이, 브라우저의 로컬 저장소만으로 바로 동작합니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">Optional Supabase and Google sign-in sync records — and the running
-                        timer — across devices, with row-level security keeping each user to their own.</span>
-                    <span class="t-ko" lang="ko">Supabase와 구글 로그인을 선택하면 기록은 물론 진행 중인 타이머까지 기기 사이에 동기화되고, 행 수준 보안으로 각자
-                        자신의 데이터만 다룰 수 있습니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A native Android port (Kotlin) shares the same Supabase backend as the
-                        web app, so sessions and projects follow you between them.</span>
-                    <span class="t-ko" lang="ko">네이티브 안드로이드 포트(Kotlin)가 웹 앱과 같은 Supabase 백엔드를 사용해, 세션과 프로젝트가
-                        양쪽에서 그대로 이어집니다.</span>
+                    <span class="t-en" lang="en"><strong>Built with:</strong> a framework-free JavaScript web app
+                        and a Kotlin port on Android, both working with no account on local storage alone; optional
+                        Supabase + Google sign-in syncs history with row-level security.</span>
+                    <span class="t-ko" lang="ko"><strong>기술:</strong> 프레임워크 없는 JavaScript 웹 앱과 Kotlin 안드로이드
+                        포트로 만들었고, 계정 없이 로컬 저장소만으로 동작합니다. Supabase와 구글 로그인을 선택하면 행 수준 보안으로 기록이 동기화됩니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
-                <picture>
-                    <source srcset="timbertimer.webp" type="image/webp">
-                    <img src="timbertimer.jpg"
-                        alt="TimberTimer app — a countdown with session name, duration and tree species beside a to-do list and a weekly forest of completed sessions"
-                        data-ko-alt="TimberTimer 앱 — 세션 이름과 시간, 나무 종류를 고르는 카운트다운 옆에 할 일 목록과 완료한 세션이 모인 주간 숲"
-                        loading="lazy" width="960" height="615">
-                </picture>
+            <div class="media-row app-row">
+                <figure class="panel">
+                    <img src="timbertimer_web.png"
+                        alt="TimberTimer web app — a countdown beside a to-do list and a weekly forest of completed sessions"
+                        data-ko-alt="TimberTimer 웹 앱 — 할 일 목록과 완료한 세션이 모인 주간 숲 옆의 카운트다운" loading="lazy"
+                        width="1120" height="1448">
+                    <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
+                </figure>
+                <figure class="panel">
+                    <img src="timbertimer_android.png"
+                        alt="TimberTimer Android app — the same countdown, project, and task fields"
+                        data-ko-alt="TimberTimer 안드로이드 앱 — 동일한 카운트다운과 프로젝트, 할 일 항목" loading="lazy" width="540"
+                        height="1200">
+                    <figcaption><span class="t-en" lang="en">Android</span><span class="t-ko"
+                            lang="ko">안드로이드</span></figcaption>
+                </figure>
             </div>
             <div class="project-links">
                 <a href="https://hanifedma.com/timbertimer/" target="_blank">
@@ -1321,30 +1309,32 @@
             </div>
             <ul>
                 <li>
-                    <span class="t-en" lang="en">Habit tracker with a grid of days and a today checklist, for yes/no
-                        habits or measurable goals with a target and a unit.</span>
-                    <span class="t-ko" lang="ko">날짜 격자와 오늘 체크리스트로 습관을 기록합니다. 예/아니오 습관은 물론 목표치와 단위를 가진 습관도
-                        지원합니다.</span>
+                    <span class="t-en" lang="en"><strong>Purpose:</strong> a habit tracker with a today checklist
+                        and a day-by-day grid, for yes/no habits or measurable goals with a target and a unit.</span>
+                    <span class="t-ko" lang="ko"><strong>목적:</strong> 오늘 체크리스트와 날짜별 격자로 습관을 기록하는 앱으로, 예/아니오
+                        습관은 물론 목표치와 단위를 가진 습관도 지원합니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Streaks, 30-day completion rates, a heatmap calendar and a weekday
-                        breakdown; skipped days leave the streak intact.</span>
-                    <span class="t-ko" lang="ko">연속 기록과 30일 달성률, 히트맵 달력, 요일별 통계를 보여주며, 건너뛴 날은 연속 기록에 영향을 주지
-                        않습니다.</span>
+                    <span class="t-en" lang="en"><strong>Available on:</strong> web and Android; usable with no
+                        account at all, or with Google sign-in for real-time sync.</span>
+                    <span class="t-ko" lang="ko"><strong>지원 플랫폼:</strong> 웹과 안드로이드, 계정 없이도 쓸 수 있고 구글 로그인을 하면
+                        실시간으로 동기화됩니다.</span>
                 </li>
                 <li>
-                    <span class="t-en" lang="en">Usable with no account at all; Google sign-in adds real-time sync
-                        across devices, and everything keeps working offline.</span>
-                    <span class="t-ko" lang="ko">계정 없이도 모든 기능을 쓸 수 있고, 구글 로그인을 하면 기기 간 실시간 동기화가 되며 오프라인에서도
-                        동작합니다.</span>
-                </li>
-                <li>
-                    <span class="t-en" lang="en">A native Android client (Kotlin + Compose) shares the same Firestore
-                        database and adds a home-screen widget.</span>
-                    <span class="t-ko" lang="ko">네이티브 안드로이드 클라이언트(Kotlin·Compose)가 같은 Firestore 데이터베이스를 사용하며, 홈 화면
-                        위젯을 제공합니다.</span>
+                    <span class="t-en" lang="en"><strong>Built with:</strong> a framework-free JavaScript web app on
+                        Firebase; a Kotlin + Compose Android client reads the same Firestore database and adds a
+                        home-screen widget. Streaks, 30-day completion rates, and a heatmap calendar on both.</span>
+                    <span class="t-ko" lang="ko"><strong>기술:</strong> 프레임워크 없는 JavaScript 웹 앱을 Firebase로 만들었고,
+                        Kotlin·Compose 안드로이드 클라이언트가 같은 Firestore 데이터베이스를 사용하며 홈 화면 위젯을 제공합니다. 연속 기록과 30일
+                        달성률, 히트맵 달력은 양쪽 모두에 있습니다.</span>
                 </li>
             </ul>
+            <div class="project-media app-shot">
+                <img src="streak_android.png"
+                    alt="Streak Android app — today's habit checklist with progress rings, streak counts, and per-habit tags"
+                    data-ko-alt="Streak 안드로이드 앱 — 진행률과 연속 기록, 태그가 표시된 오늘의 습관 체크리스트" loading="lazy"
+                    width="540" height="1200">
+            </div>
             <div class="project-links">
                 <a href="https://hanifedma.com/streak/" target="_blank">
                     <span class="t-en" lang="en">Open app &rarr;</span>
@@ -1394,7 +1384,7 @@
                     <span class="t-ko" lang="ko">Wear OS 5를 쓰는 제 갤럭시 워치 7을 위해 만들었고, 소스에서 빌드해 ADB로 설치합니다.</span>
                 </li>
             </ul>
-            <div class="project-media">
+            <div class="project-media app-shot">
                 <img src="whiterose.png"
                     alt="WhiteRose on a Galaxy Watch — a minute countdown ring reading 'Every minute, on the minute'"
                     data-ko-alt="갤럭시 워치의 WhiteRose — '매분 정각'이라고 적힌 1분 카운트다운 링" loading="lazy" width="384"
