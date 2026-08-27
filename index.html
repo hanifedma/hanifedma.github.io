@@ -220,10 +220,13 @@
             background: var(--card-bg);
             color: var(--text-secondary);
             cursor: pointer;
-            transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+            /* Theme colours fade with the rest of the page; hover stays instant,
+               the same way links do. */
+            transition: background-color 2s, color 2s, border-color 2s;
         }
 
         .lang-toggle:hover {
+            transition: color 0s, border-color 0s;
             color: var(--text-primary);
             border-color: var(--accent);
         }
