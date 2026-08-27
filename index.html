@@ -894,6 +894,19 @@
             }
         });
 
+        // A tab that is never switched away from would otherwise never look again.
+        // Check on a slow timer as well, but only while the reader is idle, so the
+        // page never reloads out from under someone mid-sentence.
+        let lastInput = Date.now();
+        ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((evt) => {
+            addEventListener(evt, () => { lastInput = Date.now(); }, { passive: true });
+        });
+        setInterval(() => {
+            if (document.visibilityState === 'visible' && Date.now() - lastInput > 60000) {
+                checkForNewVersion();
+            }
+        }, 600000);
+
         // Re-enable theme transitions once the initial frame has painted.
         requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
     </script>

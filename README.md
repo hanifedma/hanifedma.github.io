@@ -89,7 +89,9 @@ is showing — and reloads itself if it does.
 The subtlety is that a page painted from the cache has to compare against the validator stored
 when *that copy* was fetched, not against a fresh probe of the server: probing first would adopt
 the newer version as the baseline and leave the visitor reading a stale page for as long as the
-tab stayed open. The check runs only on `visibilitychange`, so an idle tab costs nothing.
+tab stayed open. The check runs on `visibilitychange`, and on a ten-minute timer that only
+fires while the tab is visible and its reader has been idle for a minute — so a tab left open
+and never switched away from still catches up, without the page reloading mid-sentence.
 
 Media whose contents change while keeping their filename are cache-busted with a `?v=N` query
 string, and the resume link is stamped with a timestamp so it always opens the current PDF.

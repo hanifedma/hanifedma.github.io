@@ -1152,11 +1152,11 @@
             <div class="media-row app-row">
                 <figure class="panel">
                     <picture>
-                        <source srcset="ponder_web.webp" type="image/webp">
-                        <img src="ponder_web.png"
+                        <source srcset="ponder_web.webp?v=2" type="image/webp">
+                        <img src="ponder_web.png?v=2"
                             alt="Ponder web app — a composer for a quote with an optional source and tag, above search, shuffle and PDF export controls"
                             data-ko-alt="Ponder 웹 앱 — 출처와 태그를 함께 적는 인용구 입력창, 그 아래로 검색과 셔플, PDF 내보내기 버튼"
-                            loading="lazy" width="1200" height="759">
+                            loading="lazy" width="720" height="759">
                     </picture>
                     <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
                 </figure>
@@ -1225,11 +1225,11 @@
             <div class="media-row app-row">
                 <figure class="panel">
                     <picture>
-                        <source srcset="waterline_web.webp" type="image/webp">
-                        <img src="waterline_web.png"
+                        <source srcset="waterline_web.webp?v=2" type="image/webp">
+                        <img src="waterline_web.png?v=2"
                             alt="Waterline web app — a ring-shaped timer part-way through a 16-hour fast, above streak, longest and total-time stats"
                             data-ko-alt="Waterline 웹 앱 — 16시간 단식이 진행 중인 고리 모양 타이머와 그 아래 연속 기록·최장 기록·총 시간 통계"
-                            loading="lazy" width="1440" height="685">
+                            loading="lazy" width="688" height="685">
                     </picture>
                     <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
                 </figure>
@@ -1585,6 +1585,19 @@
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') checkForNewVersion();
         });
+
+        // A tab that is never switched away from would otherwise never look again.
+        // Check on a slow timer as well, but only while the reader is idle, so the
+        // page never reloads out from under someone mid-sentence.
+        let lastInput = Date.now();
+        ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((evt) => {
+            addEventListener(evt, () => { lastInput = Date.now(); }, { passive: true });
+        });
+        setInterval(() => {
+            if (document.visibilityState === 'visible' && Date.now() - lastInput > 60000) {
+                checkForNewVersion();
+            }
+        }, 600000);
 
         // Re-enable theme transitions once the initial frame has painted.
         requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('preload')));
