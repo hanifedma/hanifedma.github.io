@@ -572,7 +572,7 @@
            sliver, so an app row caps its shots by height and lets each keep its own
            proportions. Bottom-aligning the panels lines the two captions up.
            The browser shot takes two thirds of the row: it is the wide one, and an
-           even split left a 1280px-wide grid too small to read. */
+           even split left a 1024px-wide grid too small to read. */
         .app-row {
             grid-template-columns: 2fr 1fr;
             align-items: end;
@@ -1370,11 +1370,11 @@
             <div class="media-row app-row">
                 <figure class="panel">
                     <picture>
-                        <source srcset="streak_web.webp" type="image/webp">
-                        <img src="streak_web.png"
+                        <source srcset="streak_web.webp?v=2" type="image/webp">
+                        <img src="streak_web.png?v=2"
                             alt="Streak web app — the habit grid, one row per habit and one column per day, with current streaks down the left"
                             data-ko-alt="Streak 웹 앱 — 습관마다 한 행, 날짜마다 한 열로 이루어진 격자와 왼쪽의 현재 연속 기록"
-                            loading="lazy" width="1280" height="520">
+                            loading="lazy" width="1024" height="520">
                     </picture>
                     <figcaption><span class="t-en" lang="en">Web</span><span class="t-ko" lang="ko">웹</span></figcaption>
                 </figure>
